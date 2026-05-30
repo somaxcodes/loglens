@@ -1,0 +1,769 @@
+2026-05-28T15:47:10.452601+00:00 pradeep systemd-sysctl[75]: Couldn't write '1' to 'kernel/apparmor_restrict_unprivileged_userns', ignoring: No such file or directory
+2026-05-28T15:47:10.452812+00:00 pradeep systemd-sysctl[75]: Couldn't write '1' to 'kernel/apparmor_restrict_unprivileged_unconfined', ignoring: No such file or directory
+2026-05-28T15:47:10.452877+00:00 pradeep kernel: Linux version 6.6.114.1-microsoft-standard-WSL2 (root@507f3e43091d) (gcc (GCC) 13.2.0, GNU ld (GNU Binutils) 2.41) #1 SMP PREEMPT_DYNAMIC Mon Dec  1 20:46:23 UTC 2025
+2026-05-28T15:47:10.452881+00:00 pradeep kernel: Command line: initrd=\initrd.img WSL_ROOT_INIT=1 panic=-1 nr_cpus=16 hv_utils.timesync_implicit=1 console=hvc0 debug pty.legacy_count=0 WSL_ENABLE_CRASH_DUMP=1
+2026-05-28T15:47:10.452886+00:00 pradeep kernel: KERNEL supported cpus:
+2026-05-28T15:47:10.452887+00:00 pradeep kernel:   Intel GenuineIntel
+2026-05-28T15:47:10.452888+00:00 pradeep kernel:   AMD AuthenticAMD
+2026-05-28T15:47:10.452888+00:00 pradeep kernel: BIOS-provided physical RAM map:
+2026-05-28T15:47:10.452889+00:00 pradeep kernel: BIOS-e820: [mem 0x0000000000000000-0x000000000009ffff] usable
+2026-05-28T15:47:10.452889+00:00 pradeep kernel: BIOS-e820: [mem 0x00000000000e0000-0x00000000000e0fff] reserved
+2026-05-28T15:47:10.452893+00:00 pradeep kernel: BIOS-e820: [mem 0x0000000000100000-0x00000000001fffff] ACPI data
+2026-05-28T15:47:10.452887+00:00 pradeep systemd[1]: Starting systemd-journal-flush.service - Flush Journal to Persistent Storage...
+2026-05-28T15:47:10.452895+00:00 pradeep kernel: BIOS-e820: [mem 0x0000000000200000-0x00000000f7ffffff] usable
+2026-05-28T15:47:10.452895+00:00 pradeep kernel: BIOS-e820: [mem 0x0000000100000000-0x00000001c35fffff] usable
+2026-05-28T15:47:10.452896+00:00 pradeep kernel: NX (Execute Disable) protection: active
+2026-05-28T15:47:10.452897+00:00 pradeep kernel: APIC: Static calls initialized
+2026-05-28T15:47:10.452897+00:00 pradeep kernel: DMI not present or invalid.
+2026-05-28T15:47:10.452898+00:00 pradeep kernel: Hypervisor detected: Microsoft Hyper-V
+2026-05-28T15:47:10.452897+00:00 pradeep systemd[1]: Finished systemd-tmpfiles-setup-dev.service - Create Static Device Nodes in /dev.
+2026-05-28T15:47:10.452901+00:00 pradeep kernel: Hyper-V: privilege flags low 0xae7f, high 0x3b8030, hints 0x900c2c, misc 0xe0bed7b6
+2026-05-28T15:47:10.452902+00:00 pradeep kernel: Hyper-V: Nested features: 0x4a0000
+2026-05-28T15:47:10.452903+00:00 pradeep kernel: Hyper-V: LAPIC Timer Frequency: 0xc3500
+2026-05-28T15:47:10.452903+00:00 pradeep kernel: Hyper-V: Using hypercall for remote TLB flush
+2026-05-28T15:47:10.452904+00:00 pradeep kernel: clocksource: hyperv_clocksource_tsc_page: mask: 0xffffffffffffffff max_cycles: 0x24e6a1710, max_idle_ns: 440795202120 ns
+2026-05-28T15:47:10.452904+00:00 pradeep kernel: clocksource: hyperv_clocksource_msr: mask: 0xffffffffffffffff max_cycles: 0x24e6a1710, max_idle_ns: 440795202120 ns
+2026-05-28T15:47:10.452903+00:00 pradeep systemd[1]: Reached target local-fs-pre.target - Preparation for Local File Systems.
+2026-05-28T15:47:10.452911+00:00 pradeep kernel: tsc: Detected 1996.191 MHz processor
+2026-05-28T15:47:10.452912+00:00 pradeep kernel: e820: update [mem 0x00000000-0x00000fff] usable ==> reserved
+2026-05-28T15:47:10.452909+00:00 pradeep systemd[1]: Reached target local-fs.target - Local File Systems.
+2026-05-28T15:47:10.452913+00:00 pradeep kernel: e820: remove [mem 0x000a0000-0x000fffff] usable
+2026-05-28T15:47:10.452913+00:00 pradeep kernel: last_pfn = 0x1c3600 max_arch_pfn = 0x400000000
+2026-05-28T15:47:10.452914+00:00 pradeep kernel: MTRR map: 5 entries (4 fixed + 1 variable; max 20), built from 8 variable MTRRs
+2026-05-28T15:47:10.452914+00:00 pradeep kernel: x86/PAT: Configuration [0-7]: WB  WC  UC- UC  WB  WP  UC- WT  
+2026-05-28T15:47:10.452917+00:00 pradeep kernel: last_pfn = 0xf8000 max_arch_pfn = 0x400000000
+2026-05-28T15:47:10.452918+00:00 pradeep kernel: Using GB pages for direct mapping
+2026-05-28T15:47:10.452918+00:00 pradeep kernel: RAMDISK: [mem 0x04be5000-0x04e99fff]
+2026-05-28T15:47:10.452919+00:00 pradeep kernel: ACPI: Early table checksum verification disabled
+2026-05-28T15:47:10.452919+00:00 pradeep kernel: ACPI: RSDP 0x00000000000E0000 000024 (v02 VRTUAL)
+2026-05-28T15:47:10.452920+00:00 pradeep kernel: ACPI: XSDT 0x0000000000100000 000044 (v01 VRTUAL MICROSFT 00000001 MSFT 00000001)
+2026-05-28T15:47:10.452923+00:00 pradeep kernel: ACPI: FACP 0x0000000000101000 000114 (v06 VRTUAL MICROSFT 00000001 MSFT 00000001)
+2026-05-28T15:47:10.452924+00:00 pradeep kernel: ACPI: DSDT 0x00000000001011B8 01E11C (v02 MSFTVM DSDT01   00000001 INTL 20230628)
+2026-05-28T15:47:10.452924+00:00 pradeep kernel: ACPI: FACS 0x0000000000101114 000040
+2026-05-28T15:47:10.452925+00:00 pradeep kernel: ACPI: OEM0 0x0000000000101154 000064 (v01 VRTUAL MICROSFT 00000001 MSFT 00000001)
+2026-05-28T15:47:10.452915+00:00 pradeep systemd[1]: Listening on systemd-sysext.socket - System Extension Image Management.
+2026-05-28T15:47:10.452925+00:00 pradeep kernel: ACPI: SRAT 0x000000000011F2D4 0003B0 (v02 VRTUAL MICROSFT 00000001 MSFT 00000001)
+2026-05-28T15:47:10.452926+00:00 pradeep kernel: ACPI: APIC 0x000000000011F684 0000C8 (v04 VRTUAL MICROSFT 00000001 MSFT 00000001)
+2026-05-28T15:47:10.452926+00:00 pradeep kernel: ACPI: Reserving FACP table memory at [mem 0x101000-0x101113]
+2026-05-28T15:47:10.452929+00:00 pradeep kernel: ACPI: Reserving DSDT table memory at [mem 0x1011b8-0x11f2d3]
+2026-05-28T15:47:10.452929+00:00 pradeep kernel: ACPI: Reserving FACS table memory at [mem 0x101114-0x101153]
+2026-05-28T15:47:10.452930+00:00 pradeep kernel: ACPI: Reserving OEM0 table memory at [mem 0x101154-0x1011b7]
+2026-05-28T15:47:10.452930+00:00 pradeep kernel: ACPI: Reserving SRAT table memory at [mem 0x11f2d4-0x11f683]
+2026-05-28T15:47:10.452928+00:00 pradeep systemd[1]: apparmor.service - Load AppArmor profiles skipped, unmet condition check ConditionSecurity=apparmor
+2026-05-28T15:47:10.452931+00:00 pradeep kernel: ACPI: Reserving APIC table memory at [mem 0x11f684-0x11f74b]
+2026-05-28T15:47:10.452931+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x00 -> Node 0
+2026-05-28T15:47:10.452934+00:00 pradeep systemd[1]: Starting console-setup.service - Set console font and keymap...
+2026-05-28T15:47:10.452939+00:00 pradeep systemd[1]: Starting netplan-configure.service - Netplan Backend Configuration...
+2026-05-28T15:47:10.452944+00:00 pradeep systemd[1]: snapd.apparmor.service - Load AppArmor profiles managed internally by snapd skipped, unmet condition check ConditionSecurity=apparmor
+2026-05-28T15:47:10.452952+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x01 -> Node 0
+2026-05-28T15:47:10.452954+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x02 -> Node 0
+2026-05-28T15:47:10.452954+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x03 -> Node 0
+2026-05-28T15:47:10.452955+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x04 -> Node 0
+2026-05-28T15:47:10.452955+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x05 -> Node 0
+2026-05-28T15:47:10.452956+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x06 -> Node 0
+2026-05-28T15:47:10.452956+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x07 -> Node 0
+2026-05-28T15:47:10.452950+00:00 pradeep systemd[1]: Starting systemd-binfmt.service - Set Up Additional Binary Formats...
+2026-05-28T15:47:10.452959+00:00 pradeep systemd[1]: Starting systemd-udevd.service - Rule-based Manager for Device Events and Files...
+2026-05-28T15:47:10.452964+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x08 -> Node 0
+2026-05-28T15:47:10.452964+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x09 -> Node 0
+2026-05-28T15:47:10.452965+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x0a -> Node 0
+2026-05-28T15:47:10.452965+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x0b -> Node 0
+2026-05-28T15:47:10.452966+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x0c -> Node 0
+2026-05-28T15:47:10.452966+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x0d -> Node 0
+2026-05-28T15:47:10.452965+00:00 pradeep systemd[1]: Finished console-setup.service - Set console font and keymap.
+2026-05-28T15:47:10.452969+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x0e -> Node 0
+2026-05-28T15:47:10.452970+00:00 pradeep kernel: SRAT: PXM 0 -> APIC 0x0f -> Node 0
+2026-05-28T15:47:10.452970+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x00000000-0xf7ffffff] hotplug
+2026-05-28T15:47:10.452971+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x1c35fffff] hotplug
+2026-05-28T15:47:10.452971+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x1c3600000-0x9ffdfffff] hotplug
+2026-05-28T15:47:10.452972+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x1000000000-0xfcffffffff] hotplug
+2026-05-28T15:47:10.452970+00:00 pradeep systemd[1]: Finished systemd-binfmt.service - Set Up Additional Binary Formats.
+2026-05-28T15:47:10.452975+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x10000000000-0x1ffffffffff] hotplug
+2026-05-28T15:47:10.452975+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x20000000000-0x3ffffffffff] hotplug
+2026-05-28T15:47:10.452976+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x40000000000-0x7ffffffffff] hotplug
+2026-05-28T15:47:10.452976+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x80000000000-0xfffffffffff] hotplug
+2026-05-28T15:47:10.452977+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000000-0x1fffffffffff] hotplug
+2026-05-28T15:47:10.452977+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x200000000000-0x3fffffffffff] hotplug
+2026-05-28T15:47:10.452978+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x400000000000-0x7fffffffffff] hotplug
+2026-05-28T15:47:10.452976+00:00 pradeep systemd-resolved[77]: Positive Trust Anchors:
+2026-05-28T15:47:10.452981+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x800000000000-0xffffffffffff] hotplug
+2026-05-28T15:47:10.452982+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x1000000000000-0x1ffffffffffff] hotplug
+2026-05-28T15:47:10.452982+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x2000000000000-0x3ffffffffffff] hotplug
+2026-05-28T15:47:10.452983+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x4000000000000-0x7ffffffffffff] hotplug
+2026-05-28T15:47:10.452983+00:00 pradeep kernel: ACPI: SRAT: Node 0 PXM 0 [mem 0x8000000000000-0xfffffffffffff] hotplug
+2026-05-28T15:47:10.452983+00:00 pradeep kernel: NUMA: Node 0 [mem 0x00000000-0xf7ffffff] + [mem 0x100000000-0x1c35fffff] -> [mem 0x00000000-0x1c35fffff]
+2026-05-28T15:47:10.452981+00:00 pradeep systemd-resolved[77]: . IN DS 20326 8 2 e06d44b80b8f1d39a95c0b0d7c65d08458e880409bbc683457104237c7f8ec8d
+2026-05-28T15:47:10.452986+00:00 pradeep kernel: NODE_DATA(0) allocated [mem 0x1c35dd000-0x1c35fefff]
+2026-05-28T15:47:10.452987+00:00 pradeep kernel: Zone ranges:
+2026-05-28T15:47:10.452988+00:00 pradeep kernel:   DMA32    [mem 0x0000000000001000-0x00000000ffffffff]
+2026-05-28T15:47:10.452988+00:00 pradeep kernel:   Normal   [mem 0x0000000100000000-0x00000001c35fffff]
+2026-05-28T15:47:10.452989+00:00 pradeep kernel:   Device   empty
+2026-05-28T15:47:10.452989+00:00 pradeep kernel: Movable zone start for each node
+2026-05-28T15:47:10.452992+00:00 pradeep kernel: Early memory node ranges
+2026-05-28T15:47:10.452992+00:00 pradeep kernel:   node   0: [mem 0x0000000000001000-0x000000000009ffff]
+2026-05-28T15:47:10.452987+00:00 pradeep systemd-resolved[77]: . IN DS 38696 8 2 683d2d0acb8c9b712a1948b27f741219298d0a450d612c483af444a4c0fb2b16
+2026-05-28T15:47:10.452993+00:00 pradeep kernel:   node   0: [mem 0x0000000000200000-0x00000000f7ffffff]
+2026-05-28T15:47:10.452994+00:00 pradeep kernel:   node   0: [mem 0x0000000100000000-0x00000001c35fffff]
+2026-05-28T15:47:10.452994+00:00 pradeep kernel: Initmem setup node 0 [mem 0x0000000000001000-0x00000001c35fffff]
+2026-05-28T15:47:10.452994+00:00 pradeep kernel: On node 0, zone DMA32: 1 pages in unavailable ranges
+2026-05-28T15:47:10.452995+00:00 pradeep kernel: On node 0, zone DMA32: 352 pages in unavailable ranges
+2026-05-28T15:47:10.452998+00:00 pradeep kernel: On node 0, zone Normal: 18944 pages in unavailable ranges
+2026-05-28T15:47:10.452999+00:00 pradeep kernel: ACPI: PM-Timer IO Port: 0x408
+2026-05-28T15:47:10.452999+00:00 pradeep kernel: ACPI: LAPIC_NMI (acpi_id[0x01] dfl dfl lint[0x1])
+2026-05-28T15:47:10.452996+00:00 pradeep systemd-resolved[77]: Negative trust anchors: home.arpa 10.in-addr.arpa 16.172.in-addr.arpa 17.172.in-addr.arpa 18.172.in-addr.arpa 19.172.in-addr.arpa 20.172.in-addr.arpa 21.172.in-addr.arpa 22.172.in-addr.arpa 23.172.in-addr.arpa 24.172.in-addr.arpa 25.172.in-addr.arpa 26.172.in-addr.arpa 27.172.in-addr.arpa 28.172.in-addr.arpa 29.172.in-addr.arpa 30.172.in-addr.arpa 31.172.in-addr.arpa 170.0.0.192.in-addr.arpa 171.0.0.192.in-addr.arpa 168.192.in-addr.arpa d.f.ip6.arpa ipv4only.arpa resolver.arpa corp home internal intranet lan local private test
+2026-05-28T15:47:10.452999+00:00 pradeep kernel: IOAPIC[0]: apic_id 16, version 17, address 0xfec00000, GSI 0-23
+2026-05-28T15:47:10.453000+00:00 pradeep kernel: ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 high level)
+2026-05-28T15:47:10.453000+00:00 pradeep kernel: ACPI: Using ACPI (MADT) for SMP configuration information
+2026-05-28T15:47:10.453003+00:00 pradeep kernel: smpboot: Allowing 16 CPUs, 0 hotplug CPUs
+2026-05-28T15:47:10.453004+00:00 pradeep kernel: PM: hibernation: Registered nosave memory: [mem 0x00000000-0x00000fff]
+2026-05-28T15:47:10.453004+00:00 pradeep kernel: PM: hibernation: Registered nosave memory: [mem 0x000a0000-0x001fffff]
+2026-05-28T15:47:10.453005+00:00 pradeep kernel: PM: hibernation: Registered nosave memory: [mem 0xf8000000-0xffffffff]
+2026-05-28T15:47:10.453002+00:00 pradeep sh[105]: /bin/sh: 1: cannot create /proc/sys/fs/binfmt_misc/WSLInterop: Permission denied
+2026-05-28T15:47:10.453005+00:00 pradeep kernel: [mem 0xf8000000-0xffffffff] available for PCI devices
+2026-05-28T15:47:10.453006+00:00 pradeep kernel: Booting paravirtualized kernel on Hyper-V
+2026-05-28T15:47:10.453006+00:00 pradeep kernel: clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645519600211568 ns
+2026-05-28T15:47:10.453010+00:00 pradeep kernel: setup_percpu: NR_CPUS:8192 nr_cpumask_bits:16 nr_cpu_ids:16 nr_node_ids:1
+2026-05-28T15:47:10.453010+00:00 pradeep kernel: percpu: Embedded 63 pages/cpu s221184 r8192 d28672 u262144
+2026-05-28T15:47:10.453010+00:00 pradeep kernel: pcpu-alloc: s221184 r8192 d28672 u262144 alloc=1*2097152
+2026-05-28T15:47:10.453008+00:00 pradeep systemd-udevd[100]: Using default interface naming scheme 'v259'.
+2026-05-28T15:47:10.453011+00:00 pradeep kernel: pcpu-alloc: [0] 00 01 02 03 04 05 06 07 [0] 08 09 10 11 12 13 14 15 
+2026-05-28T15:47:10.453013+00:00 pradeep systemd[1]: Finished systemd-journal-flush.service - Flush Journal to Persistent Storage.
+2026-05-28T15:47:10.453019+00:00 pradeep systemd[1]: Starting systemd-tmpfiles-setup.service - Create System Files and Directories...
+2026-05-28T15:47:10.453027+00:00 pradeep systemd-resolved[77]: Using system hostname 'pradeep'.
+2026-05-28T15:47:10.453032+00:00 pradeep systemd[1]: Started systemd-resolved.service - Network Name Resolution.
+2026-05-28T15:47:10.453038+00:00 pradeep systemd[1]: Reached target nss-lookup.target - Host and Network Name Lookups.
+2026-05-28T15:47:10.453043+00:00 pradeep systemd[1]: Started systemd-udevd.service - Rule-based Manager for Device Events and Files.
+2026-05-28T15:47:10.453050+00:00 pradeep systemd[1]: modprobe@configfs.service - Load Kernel Module configfs skipped, unmet condition check ConditionKernelModuleLoaded=!configfs
+2026-05-28T15:47:10.453056+00:00 pradeep systemd[1]: Finished systemd-tmpfiles-setup.service - Create System Files and Directories.
+2026-05-28T15:47:10.453082+00:00 pradeep systemd[1]: Starting ldconfig.service - Rebuild Dynamic Linker Cache...
+2026-05-28T15:47:10.453089+00:00 pradeep systemd[1]: systemd-firstboot.service - Initial Setup skipped, unmet condition check ConditionFirstBoot=yes
+2026-05-28T15:47:10.453095+00:00 pradeep systemd[1]: first-boot-complete.target - First Boot Complete skipped, unmet condition check ConditionFirstBoot=yes
+2026-05-28T15:47:10.453104+00:00 pradeep kernel: Hyper-V: PV spinlocks enabled
+2026-05-28T15:47:10.453104+00:00 pradeep kernel: PV qspinlock hash table entries: 256 (order: 0, 4096 bytes, linear)
+2026-05-28T15:47:10.453101+00:00 pradeep systemd[1]: Starting systemd-journal-catalog-update.service - Rebuild Journal Catalog...
+2026-05-28T15:47:10.453108+00:00 pradeep kernel: Kernel command line: initrd=\initrd.img WSL_ROOT_INIT=1 panic=-1 nr_cpus=16 hv_utils.timesync_implicit=1 console=hvc0 debug pty.legacy_count=0 WSL_ENABLE_CRASH_DUMP=1
+2026-05-28T15:47:10.453109+00:00 pradeep kernel: Unknown kernel command line parameters "WSL_ROOT_INIT=1 WSL_ENABLE_CRASH_DUMP=1", will be passed to user space.
+2026-05-28T15:47:10.453110+00:00 pradeep kernel: random: crng init done
+2026-05-28T15:47:10.453110+00:00 pradeep kernel: Dentry cache hash table entries: 1048576 (order: 11, 8388608 bytes, linear)
+2026-05-28T15:47:10.453111+00:00 pradeep kernel: Inode-cache hash table entries: 524288 (order: 10, 4194304 bytes, linear)
+2026-05-28T15:47:10.453111+00:00 pradeep kernel: Fallback order for Node 0: 0 
+2026-05-28T15:47:10.453107+00:00 pradeep systemd[1]: systemd-machine-id-commit.service - Save Transient machine-id to Disk skipped, unmet condition check ConditionPathIsMountPoint=/etc/machine-id
+2026-05-28T15:47:10.453117+00:00 pradeep kernel: Built 1 zonelists, mobility grouping on.  Total pages: 1786664
+2026-05-28T15:47:10.453117+00:00 pradeep kernel: Policy zone: Normal
+2026-05-28T15:47:10.453118+00:00 pradeep kernel: mem auto-init: stack:off, heap alloc:on, heap free:off
+2026-05-28T15:47:10.453118+00:00 pradeep kernel: software IO TLB: area num 16.
+2026-05-28T15:47:10.453119+00:00 pradeep kernel: Memory: 4074488K/7262844K available (20480K kernel code, 3451K rwdata, 13596K rodata, 4480K init, 6224K bss, 250240K reserved, 0K cma-reserved)
+2026-05-28T15:47:10.453119+00:00 pradeep kernel: SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=16, Nodes=1
+2026-05-28T15:47:10.453117+00:00 pradeep systemd[1]: Starting wslg.service - WSLg Remount Service...
+2026-05-28T15:47:10.453122+00:00 pradeep kernel: ftrace: allocating 55788 entries in 218 pages
+2026-05-28T15:47:10.453123+00:00 pradeep kernel: ftrace: allocated 218 pages with 5 groups
+2026-05-28T15:47:10.453123+00:00 pradeep kernel: Dynamic Preempt: none
+2026-05-28T15:47:10.453124+00:00 pradeep kernel: rcu: Preemptible hierarchical RCU implementation.
+2026-05-28T15:47:10.453124+00:00 pradeep kernel: rcu: 	RCU restricting CPUs from NR_CPUS=8192 to nr_cpu_ids=16.
+2026-05-28T15:47:10.453125+00:00 pradeep kernel: 	Trampoline variant of Tasks RCU enabled.
+2026-05-28T15:47:10.453123+00:00 pradeep systemd[1]: Finished netplan-configure.service - Netplan Backend Configuration.
+2026-05-28T15:47:10.453128+00:00 pradeep kernel: 	Rude variant of Tasks RCU enabled.
+2026-05-28T15:47:10.453128+00:00 pradeep kernel: 	Tracing variant of Tasks RCU enabled.
+2026-05-28T15:47:10.453129+00:00 pradeep kernel: rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+2026-05-28T15:47:10.453129+00:00 pradeep kernel: rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=16
+2026-05-28T15:47:10.453130+00:00 pradeep kernel: Using NULL legacy PIC
+2026-05-28T15:47:10.453130+00:00 pradeep kernel: NR_IRQS: 524544, nr_irqs: 552, preallocated irqs: 0
+2026-05-28T15:47:10.453130+00:00 pradeep kernel: rcu: srcu_init: Setting srcu_struct sizes based on contention.
+2026-05-28T15:47:10.453129+00:00 pradeep systemd[1]: wslg.service: Deactivated successfully.
+2026-05-28T15:47:10.453134+00:00 pradeep kernel: Console: colour dummy device 80x25
+2026-05-28T15:47:10.453135+00:00 pradeep kernel: ACPI: Core revision 20230628
+2026-05-28T15:47:10.453135+00:00 pradeep kernel: Failed to register legacy timer interrupt
+2026-05-28T15:47:10.453135+00:00 pradeep kernel: APIC: Switch to symmetric I/O mode setup
+2026-05-28T15:47:10.453136+00:00 pradeep kernel: APIC: Switched APIC routing to: physical flat
+2026-05-28T15:47:10.453136+00:00 pradeep kernel: Hyper-V: Host Build 10.0.26100.8457-8-0
+2026-05-28T15:47:10.453135+00:00 pradeep systemd[1]: Finished wslg.service - WSLg Remount Service.
+2026-05-28T15:47:10.453139+00:00 pradeep kernel: Hyper-V: enabling crash_kexec_post_notifiers
+2026-05-28T15:47:10.453140+00:00 pradeep kernel: Hyper-V: Using IPI hypercalls
+2026-05-28T15:47:10.453140+00:00 pradeep kernel: APIC: send_IPI() replaced with hv_send_ipi()
+2026-05-28T15:47:10.453141+00:00 pradeep kernel: APIC: send_IPI_mask() replaced with hv_send_ipi_mask()
+2026-05-28T15:47:10.453141+00:00 pradeep kernel: APIC: send_IPI_mask_allbutself() replaced with hv_send_ipi_mask_allbutself()
+2026-05-28T15:47:10.453142+00:00 pradeep kernel: APIC: send_IPI_allbutself() replaced with hv_send_ipi_allbutself()
+2026-05-28T15:47:10.453142+00:00 pradeep kernel: APIC: send_IPI_all() replaced with hv_send_ipi_all()
+2026-05-28T15:47:10.453141+00:00 pradeep systemd[1]: Finished ldconfig.service - Rebuild Dynamic Linker Cache.
+2026-05-28T15:47:10.453145+00:00 pradeep kernel: APIC: send_IPI_self() replaced with hv_send_ipi_self()
+2026-05-28T15:47:10.453146+00:00 pradeep kernel: Hyper-V: Using enlightened APIC (xapic mode)
+2026-05-28T15:47:10.453146+00:00 pradeep kernel: APIC: eoi() replaced with hv_apic_eoi_write()
+2026-05-28T15:47:10.453147+00:00 pradeep kernel: APIC: read() replaced with hv_apic_read()
+2026-05-28T15:47:10.453147+00:00 pradeep kernel: APIC: write() replaced with hv_apic_write()
+2026-05-28T15:47:10.453148+00:00 pradeep kernel: APIC: icr_write() replaced with hv_apic_icr_write()
+2026-05-28T15:47:10.453151+00:00 pradeep kernel: APIC: icr_read() replaced with hv_apic_icr_read()
+2026-05-28T15:47:10.453151+00:00 pradeep kernel: clocksource: tsc-early: mask: 0xffffffffffffffff max_cycles: 0x398c40b2184, max_idle_ns: 881590731282 ns
+2026-05-28T15:47:10.453152+00:00 pradeep kernel: Calibrating delay loop (skipped), value calculated using timer frequency.. 3992.38 BogoMIPS (lpj=7984764)
+2026-05-28T15:47:10.453152+00:00 pradeep kernel: x86/cpu: User Mode Instruction Prevention (UMIP) activated
+2026-05-28T15:47:10.453153+00:00 pradeep kernel: Last level iTLB entries: 4KB 512, 2MB 512, 4MB 256
+2026-05-28T15:47:10.453147+00:00 pradeep systemd[1]: Finished systemd-journal-catalog-update.service - Rebuild Journal Catalog.
+2026-05-28T15:47:10.453154+00:00 pradeep kernel: Last level dTLB entries: 4KB 2048, 2MB 2048, 4MB 1024, 1GB 0
+2026-05-28T15:47:10.453157+00:00 pradeep kernel: Spectre V1 : Mitigation: usercopy/swapgs barriers and __user pointer sanitization
+2026-05-28T15:47:10.453158+00:00 pradeep kernel: Spectre V2 : Mitigation: Retpolines
+2026-05-28T15:47:10.453158+00:00 pradeep kernel: Spectre V2 : Spectre v2 / SpectreRSB: Filling RSB on context switch and VMEXIT
+2026-05-28T15:47:10.453159+00:00 pradeep kernel: Spectre V2 : Enabling Restricted Speculation for firmware calls
+2026-05-28T15:47:10.453159+00:00 pradeep kernel: Spectre V2 : mitigation: Enabling conditional Indirect Branch Prediction Barrier
+2026-05-28T15:47:10.453160+00:00 pradeep kernel: Spectre V2 : User space: Mitigation: STIBP always-on protection
+2026-05-28T15:47:10.453157+00:00 pradeep systemd[1]: Starting systemd-update-done.service - Update is Completed...
+2026-05-28T15:47:10.453163+00:00 pradeep kernel: Speculative Store Bypass: Mitigation: Speculative Store Bypass disabled via prctl
+2026-05-28T15:47:10.453163+00:00 pradeep kernel: Speculative Return Stack Overflow: IBPB-extending microcode not applied!
+2026-05-28T15:47:10.453164+00:00 pradeep kernel: Speculative Return Stack Overflow: WARNING: See https://kernel.org/doc/html/latest/admin-guide/hw-vuln/srso.html for mitigation options.
+2026-05-28T15:47:10.453164+00:00 pradeep kernel: active return thunk: srso_alias_return_thunk
+2026-05-28T15:47:10.453165+00:00 pradeep kernel: Speculative Return Stack Overflow: Vulnerable: Safe RET, no microcode
+2026-05-28T15:47:10.453165+00:00 pradeep kernel: Transient Scheduler Attacks: Forcing mitigation on in a VM
+2026-05-28T15:47:10.453163+00:00 pradeep systemd[1]: Finished systemd-update-done.service - Update is Completed.
+2026-05-28T15:47:10.453166+00:00 pradeep kernel: Transient Scheduler Attacks: Vulnerable: Clear CPU buffers attempted, no microcode
+2026-05-28T15:47:10.453170+00:00 pradeep kernel: x86/fpu: Supporting XSAVE feature 0x001: 'x87 floating point registers'
+2026-05-28T15:47:10.453171+00:00 pradeep kernel: x86/fpu: Supporting XSAVE feature 0x002: 'SSE registers'
+2026-05-28T15:47:10.453171+00:00 pradeep kernel: x86/fpu: Supporting XSAVE feature 0x004: 'AVX registers'
+2026-05-28T15:47:10.453172+00:00 pradeep kernel: x86/fpu: Supporting XSAVE feature 0x800: 'Control-flow User registers'
+2026-05-28T15:47:10.453172+00:00 pradeep kernel: x86/fpu: xstate_offset[2]:  576, xstate_sizes[2]:  256
+2026-05-28T15:47:10.453173+00:00 pradeep kernel: x86/fpu: xstate_offset[11]:  832, xstate_sizes[11]:   16
+2026-05-28T15:47:10.453169+00:00 pradeep systemd[1]: Finished systemd-udev-trigger.service - Coldplug All udev Devices.
+2026-05-28T15:47:10.453176+00:00 pradeep kernel: x86/fpu: Enabled xstate features 0x807, context size is 848 bytes, using 'compacted' format.
+2026-05-28T15:47:10.453177+00:00 pradeep kernel: Freeing SMP alternatives memory: 44K
+2026-05-28T15:47:10.453177+00:00 pradeep kernel: pid_max: default: 32768 minimum: 301
+2026-05-28T15:47:10.453178+00:00 pradeep kernel: LSM: initializing lsm=capability,landlock,yama,safesetid,selinux,integrity
+2026-05-28T15:47:10.453178+00:00 pradeep kernel: landlock: Up and running.
+2026-05-28T15:47:10.453179+00:00 pradeep kernel: Yama: becoming mindful.
+2026-05-28T15:47:10.453175+00:00 pradeep systemd[1]: modprobe@configfs.service - Load Kernel Module configfs skipped, unmet condition check ConditionKernelModuleLoaded=!configfs
+2026-05-28T15:47:10.453182+00:00 pradeep kernel: SELinux:  Initializing.
+2026-05-28T15:47:10.453183+00:00 pradeep kernel: Mount-cache hash table entries: 16384 (order: 5, 131072 bytes, linear)
+2026-05-28T15:47:10.453183+00:00 pradeep kernel: Mountpoint-cache hash table entries: 16384 (order: 5, 131072 bytes, linear)
+2026-05-28T15:47:10.453184+00:00 pradeep kernel: smpboot: CPU0: AMD Ryzen 7 7730U with Radeon Graphics (family: 0x19, model: 0x50, stepping: 0x0)
+2026-05-28T15:47:10.453184+00:00 pradeep kernel: RCU Tasks: Setting shift to 4 and lim to 1 rcu_task_cb_adjust=1 rcu_task_cpu_ids=16.
+2026-05-28T15:47:10.453185+00:00 pradeep kernel: RCU Tasks Rude: Setting shift to 4 and lim to 1 rcu_task_cb_adjust=1 rcu_task_cpu_ids=16.
+2026-05-28T15:47:10.453185+00:00 pradeep kernel: RCU Tasks Trace: Setting shift to 4 and lim to 1 rcu_task_cb_adjust=1 rcu_task_cpu_ids=16.
+2026-05-28T15:47:10.453182+00:00 pradeep systemd[1]: Mounting sys-kernel-config.mount - Kernel Configuration File System...
+2026-05-28T15:47:10.453188+00:00 pradeep kernel: Performance Events: Fam17h+ core perfctr, AMD PMU driver.
+2026-05-28T15:47:10.453189+00:00 pradeep kernel: ... version:                0
+2026-05-28T15:47:10.453189+00:00 pradeep kernel: ... bit width:              48
+2026-05-28T15:47:10.453190+00:00 pradeep kernel: ... generic registers:      6
+2026-05-28T15:47:10.453190+00:00 pradeep kernel: ... value mask:             0000ffffffffffff
+2026-05-28T15:47:10.453191+00:00 pradeep kernel: ... max period:             00007fffffffffff
+2026-05-28T15:47:10.453194+00:00 pradeep kernel: ... fixed-purpose events:   0
+2026-05-28T15:47:10.453194+00:00 pradeep kernel: ... event mask:             000000000000003f
+2026-05-28T15:47:10.453188+00:00 pradeep systemd[1]: Mounted sys-kernel-config.mount - Kernel Configuration File System.
+2026-05-28T15:47:10.453195+00:00 pradeep kernel: signal: max sigframe size: 1776
+2026-05-28T15:47:10.453195+00:00 pradeep kernel: rcu: Hierarchical SRCU implementation.
+2026-05-28T15:47:10.453196+00:00 pradeep kernel: rcu: 	Max phase no-delay instances is 1000.
+2026-05-28T15:47:10.453196+00:00 pradeep kernel: smp: Bringing up secondary CPUs ...
+2026-05-28T15:47:10.453198+00:00 pradeep systemd[1]: Reached target sysinit.target - System Initialization.
+2026-05-28T15:47:10.453201+00:00 pradeep kernel: smpboot: x86: Booting SMP configuration:
+2026-05-28T15:47:10.453205+00:00 pradeep kernel: .... node  #0, CPUs:        #2  #4  #6  #8 #10 #12 #14  #1  #3  #5  #7  #9 #11 #13 #15
+2026-05-28T15:47:10.453205+00:00 pradeep kernel: Spectre V2 : Update user space SMT mitigation: STIBP always-on
+2026-05-28T15:47:10.453206+00:00 pradeep kernel: smp: Brought up 1 node, 16 CPUs
+2026-05-28T15:47:10.453206+00:00 pradeep kernel: smpboot: Max logical packages: 1
+2026-05-28T15:47:10.453207+00:00 pradeep kernel: smpboot: Total of 16 processors activated (63878.11 BogoMIPS)
+2026-05-28T15:47:10.453207+00:00 pradeep kernel: node 0 deferred pages initialised in 16ms
+2026-05-28T15:47:10.453204+00:00 pradeep systemd[1]: apport-autoreport.path - Process error reports when automatic reporting is enabled (file watch) skipped, unmet condition check ConditionPathExists=/var/lib/apport/autoreport
+2026-05-28T15:47:10.453211+00:00 pradeep systemd[1]: apport-autoreport.timer - Process error reports when automatic reporting is enabled (timer based) skipped, unmet condition check ConditionPathExists=/var/lib/apport/autoreport
+2026-05-28T15:47:10.453218+00:00 pradeep systemd[1]: Started apt-daily.timer - Daily apt download activities.
+2026-05-28T15:47:10.453224+00:00 pradeep systemd[1]: Started apt-daily-upgrade.timer - Daily apt upgrade and clean activities.
+2026-05-28T15:47:10.453235+00:00 pradeep kernel: devtmpfs: initialized
+2026-05-28T15:47:10.453235+00:00 pradeep kernel: x86/mm: Memory block size: 128MB
+2026-05-28T15:47:10.453236+00:00 pradeep kernel: clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+2026-05-28T15:47:10.453236+00:00 pradeep kernel: futex hash table entries: 4096 (order: 6, 262144 bytes, linear)
+2026-05-28T15:47:10.453237+00:00 pradeep kernel: pinctrl core: initialized pinctrl subsystem
+2026-05-28T15:47:10.453230+00:00 pradeep systemd[1]: Started dpkg-db-backup.timer - Daily dpkg database backup timer.
+2026-05-28T15:47:10.453242+00:00 pradeep systemd[1]: Started e2scrub_all.timer - Periodic ext4 Online Metadata Check for All Filesystems.
+2026-05-28T15:47:10.453250+00:00 pradeep systemd[1]: fstrim.timer - Discard unused filesystem blocks once a week skipped, unmet condition check ConditionVirtualization=!container
+2026-05-28T15:47:10.453256+00:00 pradeep systemd[1]: Started logrotate.timer - Daily rotation of log files.
+2026-05-28T15:47:10.453260+00:00 pradeep systemd[1]: Started man-db.timer - Daily man-db regeneration.
+2026-05-28T15:47:10.453264+00:00 pradeep systemd[1]: Started motd-news.timer - Message of the Day.
+2026-05-28T15:47:10.453269+00:00 pradeep systemd[1]: snapd.snap-repair.timer - Timer to automatically fetch and run repair assertions skipped, no trigger condition checks were met.
+2026-05-28T15:47:10.453277+00:00 pradeep systemd[1]: Started systemd-tmpfiles-clean.timer - Daily Cleanup of Temporary Directories.
+2026-05-28T15:47:10.453281+00:00 pradeep systemd[1]: ua-timer.timer - Ubuntu Pro Timer for running repeated jobs skipped, unmet condition check ConditionPathExists=/var/lib/ubuntu-advantage/private/machine-token.json
+2026-05-28T15:47:10.453286+00:00 pradeep systemd[1]: Reached target paths.target - Path Units.
+2026-05-28T15:47:10.453290+00:00 pradeep systemd[1]: Reached target timers.target - Timer Units.
+2026-05-28T15:47:10.453295+00:00 pradeep systemd[1]: Listening on apport-forward.socket - Unix socket for apport crash forwarding.
+2026-05-28T15:47:10.453302+00:00 pradeep systemd[1]: Listening on dbus.socket - D-Bus System Message Bus Socket.
+2026-05-28T15:47:10.453306+00:00 pradeep systemd[1]: Listening on polkit-agent-helper.socket - Authorization Manager Agent Helper.
+2026-05-28T15:47:10.453310+00:00 pradeep systemd[1]: Starting snapd.socket - Socket activation for snappy daemon...
+2026-05-28T15:47:10.453314+00:00 pradeep systemd[1]: Listening on systemd-hostnamed.socket - Hostname Service Socket.
+2026-05-28T15:47:10.453319+00:00 pradeep systemd[1]: Listening on systemd-logind-varlink.socket - User Login Management Varlink Socket.
+2026-05-28T15:47:10.453336+00:00 pradeep kernel: NET: Registered PF_NETLINK/PF_ROUTE protocol family
+2026-05-28T15:47:10.453323+00:00 pradeep systemd[1]: systemd-pcrphase-sysinit.service - TPM PCR Barrier (Initialization) skipped, unmet condition check ConditionSecurity=measured-uki
+2026-05-28T15:47:10.453340+00:00 pradeep systemd[1]: Listening on snapd.socket - Socket activation for snappy daemon.
+2026-05-28T15:47:10.453398+00:00 pradeep systemd[1]: Reached target sockets.target - Socket Units.
+2026-05-28T15:47:10.453405+00:00 pradeep systemd[1]: Reached target basic.target - Basic System.
+2026-05-28T15:47:10.453342+00:00 pradeep kernel: DMA: preallocated 1024 KiB GFP_KERNEL pool for atomic allocations
+2026-05-28T15:47:10.453410+00:00 pradeep systemd[1]: System is tainted: unmerged-bin
+2026-05-28T15:47:10.453414+00:00 pradeep kernel: DMA: preallocated 1024 KiB GFP_KERNEL|GFP_DMA32 pool for atomic allocations
+2026-05-28T15:47:10.453414+00:00 pradeep systemd[1]: apport.service - automatic crash report generation skipped, unmet condition check ConditionVirtualization=!container
+2026-05-28T15:47:10.453417+00:00 pradeep kernel: audit: initializing netlink subsys (disabled)
+2026-05-28T15:47:10.453418+00:00 pradeep kernel: audit: type=2000 audit(1779983210.048:1): state=initialized audit_enabled=0 res=1
+2026-05-28T15:47:10.453419+00:00 pradeep kernel: thermal_sys: Registered thermal governor 'step_wise'
+2026-05-28T15:47:10.453419+00:00 pradeep kernel: thermal_sys: Registered thermal governor 'user_space'
+2026-05-28T15:47:10.453420+00:00 pradeep kernel: cpuidle: using governor ladder
+2026-05-28T15:47:10.453419+00:00 pradeep systemd[1]: Starting chrony.service - chrony, an NTP client/server...
+2026-05-28T15:47:10.453427+00:00 pradeep systemd[1]: Started cron.service - Regular background program processing daemon.
+2026-05-28T15:47:10.453430+00:00 pradeep kernel: cpuidle: using governor menu
+2026-05-28T15:47:10.453432+00:00 pradeep kernel: acpiphp: ACPI Hot Plug PCI Controller Driver version: 0.5
+2026-05-28T15:47:10.453432+00:00 pradeep kernel: dca service started, version 1.12.1
+2026-05-28T15:47:10.453433+00:00 pradeep kernel: PCI: Fatal: No config space access function found
+2026-05-28T15:47:10.453433+00:00 pradeep kernel: kprobes: kprobe jump-optimization is enabled. All kprobes are optimized if possible.
+2026-05-28T15:47:10.453434+00:00 pradeep kernel: HugeTLB: registered 1.00 GiB page size, pre-allocated 0 pages
+2026-05-28T15:47:10.453432+00:00 pradeep systemd[1]: Starting dbus.service - D-Bus System Message Bus...
+2026-05-28T15:47:10.453437+00:00 pradeep systemd[1]: Started dmesg.service - Save initial kernel messages after boot.
+2026-05-28T15:47:10.453442+00:00 pradeep kernel: HugeTLB: 16380 KiB vmemmap can be freed for a 1.00 GiB page
+2026-05-28T15:47:10.453443+00:00 pradeep kernel: HugeTLB: registered 2.00 MiB page size, pre-allocated 0 pages
+2026-05-28T15:47:10.453444+00:00 pradeep kernel: HugeTLB: 28 KiB vmemmap can be freed for a 2.00 MiB page
+2026-05-28T15:47:10.453441+00:00 pradeep systemd[1]: Starting e2scrub_reap.service - Remove Stale Online ext4 Metadata Check Snapshots...
+2026-05-28T15:47:10.453444+00:00 pradeep kernel: cryptd: max_cpu_qlen set to 1000
+2026-05-28T15:47:10.453445+00:00 pradeep kernel: ACPI: Added _OSI(Module Device)
+2026-05-28T15:47:10.453445+00:00 pradeep kernel: ACPI: Added _OSI(Processor Device)
+2026-05-28T15:47:10.453449+00:00 pradeep kernel: ACPI: Added _OSI(Processor Aggregator Device)
+2026-05-28T15:47:10.453447+00:00 pradeep (cron)[200]: cron.service: Referenced but unset environment variable evaluates to an empty string: EXTRA_OPTS
+2026-05-28T15:47:10.453452+00:00 pradeep kernel: ACPI: 1 ACPI AML tables successfully acquired and loaded
+2026-05-28T15:47:10.453453+00:00 pradeep kernel: ACPI: _OSC evaluation for CPUs failed, trying _PDC
+2026-05-28T15:47:10.453453+00:00 pradeep kernel: ACPI: Interpreter enabled
+2026-05-28T15:47:10.453454+00:00 pradeep kernel: ACPI: PM: (supports S0 S5)
+2026-05-28T15:47:10.453454+00:00 pradeep kernel: ACPI: Using IOAPIC for interrupt routing
+2026-05-28T15:47:10.453455+00:00 pradeep kernel: PCI: Using host bridge windows from ACPI; if necessary, use "pci=nocrs" and report a bug
+2026-05-28T15:47:10.453451+00:00 pradeep systemd[1]: getty-static.service - getty on tty2-tty6 if dbus and logind are not available skipped, unmet condition check ConditionPathExists=!/usr/bin/dbus-daemon
+2026-05-28T15:47:10.453460+00:00 pradeep kernel: PCI: Using E820 reservations for host bridge windows
+2026-05-28T15:47:10.453461+00:00 pradeep kernel: ACPI: Enabled 2 GPEs in block 00 to 0F
+2026-05-28T15:47:10.453459+00:00 pradeep systemd[1]: Starting landscape-client.service - Landscape client daemons...
+2026-05-28T15:47:10.453461+00:00 pradeep kernel: iommu: Default domain type: Translated
+2026-05-28T15:47:10.453462+00:00 pradeep kernel: iommu: DMA domain TLB invalidation policy: lazy mode
+2026-05-28T15:47:10.453462+00:00 pradeep kernel: SCSI subsystem initialized
+2026-05-28T15:47:10.453463+00:00 pradeep kernel: libata version 3.00 loaded.
+2026-05-28T15:47:10.453464+00:00 pradeep cron[200]: (CRON) INFO (pidfile fd = 3)
+2026-05-28T15:47:10.453468+00:00 pradeep kernel: pps_core: LinuxPPS API ver. 1 registered
+2026-05-28T15:47:10.453469+00:00 pradeep kernel: pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+2026-05-28T15:47:10.453468+00:00 pradeep cron[200]: (CRON) INFO (Running @reboot jobs)
+2026-05-28T15:47:10.453470+00:00 pradeep kernel: PTP clock support registered
+2026-05-28T15:47:10.453471+00:00 pradeep kernel: EDAC MC: Ver: 3.0.0
+2026-05-28T15:47:10.453471+00:00 pradeep kernel: hv_vmbus: Vmbus version:5.3
+2026-05-28T15:47:10.453472+00:00 pradeep kernel: hv_vmbus: Unknown GUID: 6e382d18-3336-4f4b-acc4-2b7703d4df4a
+2026-05-28T15:47:10.453472+00:00 pradeep kernel: hv_vmbus: Unknown GUID: dde9cbc0-5060-4436-9448-ea1254a5d177
+2026-05-28T15:47:10.453472+00:00 pradeep systemd[1]: Starting networkd-dispatcher.service - Dispatcher daemon for systemd-networkd...
+2026-05-28T15:47:10.453478+00:00 pradeep kernel: NetLabel: Initializing
+2026-05-28T15:47:10.453478+00:00 pradeep kernel: NetLabel:  domain hash size = 128
+2026-05-28T15:47:10.453476+00:00 pradeep systemd[1]: Starting rsyslog.service - System Logging Service...
+2026-05-28T15:47:10.453480+00:00 pradeep kernel: NetLabel:  protocols = UNLABELED CIPSOv4 CALIPSO
+2026-05-28T15:47:10.453480+00:00 pradeep kernel: NetLabel:  unlabeled traffic allowed by default
+2026-05-28T15:47:10.453480+00:00 pradeep kernel: PCI: Using ACPI for IRQ routing
+2026-05-28T15:47:10.453481+00:00 pradeep kernel: PCI: System does not support PCI
+2026-05-28T15:47:10.453487+00:00 pradeep kernel: vgaarb: loaded
+2026-05-28T15:47:10.453487+00:00 pradeep kernel: clocksource: Switched to clocksource tsc-early
+2026-05-28T15:47:10.453488+00:00 pradeep kernel: VFS: Disk quotas dquot_6.6.0
+2026-05-28T15:47:10.453488+00:00 pradeep kernel: VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+2026-05-28T15:47:10.453489+00:00 pradeep kernel: FS-Cache: Loaded
+2026-05-28T15:47:10.453482+00:00 pradeep systemd[1]: snapd.core-fixup.service - Automatically repair incorrect owner/permissions on core devices skipped, no trigger condition checks were met.
+2026-05-28T15:47:10.453489+00:00 pradeep kernel: pnp: PnP ACPI init
+2026-05-28T15:47:10.453492+00:00 pradeep kernel: pnp: PnP ACPI: found 1 devices
+2026-05-28T15:47:10.453491+00:00 pradeep systemd[1]: snapd.recovery-chooser-trigger.service - Wait for the Ubuntu Core chooser trigger skipped, unmet condition check ConditionPathExistsGlob=/dev/input/event*
+2026-05-28T15:47:10.453496+00:00 pradeep kernel: clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
+2026-05-28T15:47:10.453497+00:00 pradeep kernel: NET: Registered PF_INET protocol family
+2026-05-28T15:47:10.453497+00:00 pradeep kernel: IP idents hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+2026-05-28T15:47:10.453498+00:00 pradeep kernel: tcp_listen_portaddr_hash hash table entries: 4096 (order: 4, 65536 bytes, linear)
+2026-05-28T15:47:10.453496+00:00 pradeep systemd[1]: Reached target getty-pre.target - Preparation for Logins.
+2026-05-28T15:47:10.453498+00:00 pradeep kernel: Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+2026-05-28T15:47:10.453498+00:00 pradeep kernel: TCP established hash table entries: 65536 (order: 7, 524288 bytes, linear)
+2026-05-28T15:47:10.453500+00:00 pradeep systemd[1]: Starting snapd.seeded.service - Wait until snapd is fully seeded...
+2026-05-28T15:47:10.453504+00:00 pradeep kernel: TCP bind hash table entries: 65536 (order: 9, 2097152 bytes, linear)
+2026-05-28T15:47:10.453506+00:00 pradeep kernel: TCP: Hash tables configured (established 65536 bind 65536)
+2026-05-28T15:47:10.453506+00:00 pradeep kernel: UDP hash table entries: 4096 (order: 5, 131072 bytes, linear)
+2026-05-28T15:47:10.453504+00:00 pradeep systemd[1]: Starting snapd.service - Snap Daemon...
+2026-05-28T15:47:10.453506+00:00 pradeep kernel: UDP-Lite hash table entries: 4096 (order: 5, 131072 bytes, linear)
+2026-05-28T15:47:10.453507+00:00 pradeep kernel: NET: Registered PF_UNIX/PF_LOCAL protocol family
+2026-05-28T15:47:10.453507+00:00 pradeep kernel: NET: Registered PF_XDP protocol family
+2026-05-28T15:47:10.453508+00:00 pradeep systemd[1]: Starting systemd-logind.service - User Login Management...
+2026-05-28T15:47:10.453514+00:00 pradeep kernel: PCI: CLS 0 bytes, default 64
+2026-05-28T15:47:10.453515+00:00 pradeep kernel: PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+2026-05-28T15:47:10.453517+00:00 pradeep kernel: software IO TLB: mapped [mem 0x00000000f4000000-0x00000000f8000000] (64MB)
+2026-05-28T15:47:10.453513+00:00 pradeep systemd[1]: systemd-pcrphase.service - TPM PCR Barrier (User) skipped, unmet condition check ConditionSecurity=measured-uki
+2026-05-28T15:47:10.453518+00:00 pradeep kernel: Trying to unpack rootfs image as initramfs...
+2026-05-28T15:47:10.453520+00:00 pradeep kernel: clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x398c40b2184, max_idle_ns: 881590731282 ns
+2026-05-28T15:47:10.453521+00:00 pradeep kernel: clocksource: Switched to clocksource tsc
+2026-05-28T15:47:10.453521+00:00 pradeep kernel: Initialise system trusted keyrings
+2026-05-28T15:47:10.453521+00:00 pradeep systemd[1]: Starting systemd-user-sessions.service - Permit User Sessions...
+2026-05-28T15:47:10.453529+00:00 pradeep kernel: Key type blacklist registered
+2026-05-28T15:47:10.453530+00:00 pradeep kernel: workingset: timestamp_bits=36 max_order=21 bucket_order=0
+2026-05-28T15:47:10.453527+00:00 pradeep systemd[1]: ua-reboot-cmds.service - Ubuntu Pro reboot cmds skipped, unmet condition check ConditionPathExists=/var/lib/ubuntu-advantage/private/machine-token.json
+2026-05-28T15:47:10.453531+00:00 pradeep kernel: squashfs: version 4.0 (2009/01/31) Phillip Lougher
+2026-05-28T15:47:10.453531+00:00 pradeep kernel: fuse: init (API version 7.39)
+2026-05-28T15:47:10.453532+00:00 pradeep kernel: SGI XFS with ACLs, security attributes, realtime, verbose warnings, quota, no debug enabled
+2026-05-28T15:47:10.453532+00:00 pradeep kernel: Freeing initrd memory: 2772K
+2026-05-28T15:47:10.453534+00:00 pradeep systemd[1]: ubuntu-advantage.service - Ubuntu Pro Background Auto Attach skipped, no trigger condition checks were met.
+2026-05-28T15:47:10.453538+00:00 pradeep kernel: 9p: Installing v9fs 9p2000 file system support
+2026-05-28T15:47:10.453539+00:00 pradeep kernel: Key type asymmetric registered
+2026-05-28T15:47:10.453540+00:00 pradeep kernel: Asymmetric key parser 'x509' registered
+2026-05-28T15:47:10.453540+00:00 pradeep kernel: Block layer SCSI generic (bsg) driver version 0.4 loaded (major 245)
+2026-05-28T15:47:10.453541+00:00 pradeep kernel: io scheduler mq-deadline registered
+2026-05-28T15:47:10.453541+00:00 pradeep kernel: io scheduler kyber registered
+2026-05-28T15:47:10.453540+00:00 pradeep systemd[1]: Starting wsl-pro.service - Bridge to Ubuntu Pro agent on Windows...
+2026-05-28T15:47:10.453544+00:00 pradeep kernel: hv_vmbus: registering driver hv_pci
+2026-05-28T15:47:10.453548+00:00 pradeep kernel: hv_pci c4b741f5-5582-4c98-8f8b-2e082933c396: PCI VMBus probing: Using version 0x10004
+2026-05-28T15:47:10.453548+00:00 pradeep kernel: hv_pci c4b741f5-5582-4c98-8f8b-2e082933c396: PCI host bridge to bus 5582:00
+2026-05-28T15:47:10.453549+00:00 pradeep kernel: pci_bus 5582:00: root bus resource [mem 0x9ffe00000-0x9ffe02fff window]
+2026-05-28T15:47:10.453549+00:00 pradeep kernel: pci_bus 5582:00: No busn resource found for root bus, will use [bus 00-ff]
+2026-05-28T15:47:10.453550+00:00 pradeep kernel: pci 5582:00:00.0: [1af4:1043] type 00 class 0x010000
+2026-05-28T15:47:10.453551+00:00 pradeep kernel: pci 5582:00:00.0: reg 0x10: [mem 0x9ffe00000-0x9ffe00fff 64bit]
+2026-05-28T15:47:10.453546+00:00 pradeep systemd[1]: Finished systemd-user-sessions.service - Permit User Sessions.
+2026-05-28T15:47:10.453556+00:00 pradeep systemd[1]: e2scrub_reap.service: Deactivated successfully.
+2026-05-28T15:47:10.453560+00:00 pradeep kernel: pci 5582:00:00.0: reg 0x18: [mem 0x9ffe01000-0x9ffe01fff 64bit]
+2026-05-28T15:47:10.453561+00:00 pradeep kernel: pci 5582:00:00.0: reg 0x20: [mem 0x9ffe02000-0x9ffe02fff 64bit]
+2026-05-28T15:47:10.453561+00:00 pradeep kernel: pci_bus 5582:00: busn_res: [bus 00-ff] end is updated to 00
+2026-05-28T15:47:10.453561+00:00 pradeep kernel: pci 5582:00:00.0: BAR 0: assigned [mem 0x9ffe00000-0x9ffe00fff 64bit]
+2026-05-28T15:47:10.453562+00:00 pradeep kernel: pci 5582:00:00.0: BAR 2: assigned [mem 0x9ffe01000-0x9ffe01fff 64bit]
+2026-05-28T15:47:10.453562+00:00 pradeep kernel: pci 5582:00:00.0: BAR 4: assigned [mem 0x9ffe02000-0x9ffe02fff 64bit]
+2026-05-28T15:47:10.453562+00:00 pradeep systemd[1]: Finished e2scrub_reap.service - Remove Stale Online ext4 Metadata Check Snapshots.
+2026-05-28T15:47:10.453568+00:00 pradeep systemd[1]: Starting setvtrgb.service - Set console scheme...
+2026-05-28T15:47:10.453573+00:00 pradeep systemd[1]: Finished setvtrgb.service - Set console scheme.
+2026-05-28T15:47:10.453579+00:00 pradeep systemd[1]: Started dbus.service - D-Bus System Message Bus.
+2026-05-28T15:47:10.453585+00:00 pradeep systemd[1]: Created slice system-getty.slice - Slice /system/getty.
+2026-05-28T15:47:10.453590+00:00 pradeep systemd[1]: Started getty@tty1.service - Getty on tty1.
+2026-05-28T15:47:10.453601+00:00 pradeep kernel: hv_pci 339aeafb-2c54-4a94-9580-eb0cf5f8543f: PCI VMBus probing: Using version 0x10004
+2026-05-28T15:47:10.453603+00:00 pradeep kernel: hv_pci 339aeafb-2c54-4a94-9580-eb0cf5f8543f: PCI host bridge to bus 2c54:00
+2026-05-28T15:47:10.453600+00:00 pradeep systemd[1]: Reached target getty.target - Login Prompts.
+2026-05-28T15:47:10.453603+00:00 pradeep kernel: pci_bus 2c54:00: No busn resource found for root bus, will use [bus 00-ff]
+2026-05-28T15:47:10.453604+00:00 pradeep kernel: pci 2c54:00:00.0: [1414:008e] type 00 class 0x030200
+2026-05-28T15:47:10.453604+00:00 pradeep kernel: pci_bus 2c54:00: busn_res: [bus 00-ff] end is updated to 00
+2026-05-28T15:47:10.453605+00:00 pradeep kernel: ioatdma: Intel(R) QuickData Technology Driver 5.00
+2026-05-28T15:47:10.453605+00:00 pradeep kernel: virtio-pci 5582:00:00.0: enabling device (0000 -> 0002)
+2026-05-28T15:47:10.453606+00:00 pradeep chronyd-starter.sh[199]: Warning: Running in a container, likely impossible and unintended to sync system clock
+2026-05-28T15:47:10.453612+00:00 pradeep kernel: Serial: 8250/16550 driver, 8 ports, IRQ sharing enabled
+2026-05-28T15:47:10.453613+00:00 pradeep kernel: Linux agpgart interface v0.103
+2026-05-28T15:47:10.453614+00:00 pradeep kernel: AMD-Vi: AMD IOMMUv2 functionality not available on this system - This is not a bug.
+2026-05-28T15:47:10.453614+00:00 pradeep kernel: ACPI: bus type drm_connector registered
+2026-05-28T15:47:10.453614+00:00 pradeep kernel: printk: console [hvc0] enabled
+2026-05-28T15:47:10.453615+00:00 pradeep kernel: brd: module loaded
+2026-05-28T15:47:10.453614+00:00 pradeep chronyd-starter.sh[199]: Adding -x as fallback disabling control of the system clock, see /usr/share/doc/chrony/README.container to override this behavior
+2026-05-28T15:47:10.453621+00:00 pradeep kernel: loop: module loaded
+2026-05-28T15:47:10.453621+00:00 pradeep kernel: Loading iSCSI transport class v2.0-870.
+2026-05-28T15:47:10.453622+00:00 pradeep kernel: rdac: device handler registered
+2026-05-28T15:47:10.453622+00:00 pradeep kernel: Microchip SmartPQI Driver (v2.1.24-046)
+2026-05-28T15:47:10.453623+00:00 pradeep kernel: VMware PVSCSI driver - version 1.0.7.0-k
+2026-05-28T15:47:10.453623+00:00 pradeep kernel: hv_vmbus: registering driver hv_storvsc
+2026-05-28T15:47:10.453626+00:00 pradeep kernel: scsi host0: storvsc_host_t
+2026-05-28T15:47:10.453630+00:00 pradeep kernel: PPP generic driver version 2.4.2
+2026-05-28T15:47:10.453629+00:00 pradeep systemd[1]: Started systemd-logind.service - User Login Management.
+2026-05-28T15:47:10.453641+00:00 pradeep systemd[1]: Started unattended-upgrades.service - Unattended Upgrades Shutdown.
+2026-05-28T15:47:10.452388+00:00 pradeep chronyd[253]: chronyd version 4.8 starting (+CMDMON +REFCLOCK +RTC +PRIVDROP +SCFILTER +SIGND +NTS +SECHASH +IPV6 -DEBUG)
+2026-05-28T15:47:10.453040+00:00 pradeep rsyslogd: imuxsock: Acquired UNIX socket '/run/systemd/journal/syslog' (fd 3) from systemd.  [v8.2512.0]
+2026-05-28T15:47:10.453150+00:00 pradeep rsyslogd: rsyslogd's groupid changed to 101
+2026-05-28T15:47:10.453211+00:00 pradeep systemd[1]: Started rsyslog.service - System Logging Service.
+2026-05-28T15:47:10.453296+00:00 pradeep rsyslogd: rsyslogd's userid changed to 100
+2026-05-28T15:47:10.453366+00:00 pradeep rsyslogd: [origin software="rsyslogd" swVersion="8.2512.0" x-pid="240" x-info="https://www.rsyslog.com"] start
+2026-05-28T15:47:10.453737+00:00 pradeep kernel: VMware vmxnet3 virtual NIC driver - version 1.7.0.0-k-NAPI
+2026-05-28T15:47:10.453739+00:00 pradeep kernel: hv_vmbus: registering driver hv_netvsc
+2026-05-28T15:47:10.453740+00:00 pradeep kernel: Fusion MPT base driver 3.04.20
+2026-05-28T15:47:10.453740+00:00 pradeep kernel: Copyright (c) 1999-2008 LSI Corporation
+2026-05-28T15:47:10.453741+00:00 pradeep kernel: Fusion MPT SPI Host driver 3.04.20
+2026-05-28T15:47:10.453751+00:00 pradeep kernel: Fusion MPT SAS Host driver 3.04.20
+2026-05-28T15:47:10.453753+00:00 pradeep kernel: Fusion MPT misc device (ioctl) driver 3.04.20
+2026-05-28T15:47:10.453753+00:00 pradeep kernel: mptctl: Registered with Fusion MPT base driver
+2026-05-28T15:47:10.453753+00:00 pradeep kernel: mptctl: /dev/mptctl @ (major,minor=10,220)
+2026-05-28T15:47:10.453754+00:00 pradeep kernel: i8042: PNP: No PS/2 controller found.
+2026-05-28T15:47:10.453754+00:00 pradeep kernel: hv_vmbus: registering driver hyperv_keyboard
+2026-05-28T15:47:10.453764+00:00 pradeep kernel: rtc_cmos 00:00: RTC can wake from S4
+2026-05-28T15:47:10.453766+00:00 pradeep kernel: rtc_cmos 00:00: registered as rtc0
+2026-05-28T15:47:10.453767+00:00 pradeep kernel: rtc_cmos 00:00: setting system clock to 2026-05-28T15:46:50 UTC (1779983210)
+2026-05-28T15:47:10.453767+00:00 pradeep kernel: rtc_cmos 00:00: alarms up to one month, 114 bytes nvram
+2026-05-28T15:47:10.453768+00:00 pradeep kernel: device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is disabled. Duplicate IMA measurements will not be recorded in the IMA log.
+2026-05-28T15:47:10.453768+00:00 pradeep kernel: device-mapper: uevent: version 1.0.3
+2026-05-28T15:47:10.453775+00:00 pradeep kernel: device-mapper: ioctl: 4.48.0-ioctl (2023-03-01) initialised: dm-devel@redhat.com
+2026-05-28T15:47:10.453776+00:00 pradeep kernel: hv_utils: Registering HyperV Utility Driver
+2026-05-28T15:47:10.453776+00:00 pradeep kernel: hv_vmbus: registering driver hv_utils
+2026-05-28T15:47:10.453777+00:00 pradeep kernel: hv_vmbus: registering driver hv_balloon
+2026-05-28T15:47:10.453777+00:00 pradeep kernel: hv_vmbus: registering driver dxgkrnl
+2026-05-28T15:47:10.453778+00:00 pradeep kernel: hv_utils: TimeSync IC version 4.0
+2026-05-28T15:47:10.453778+00:00 pradeep kernel: hv_balloon: Using Dynamic Memory protocol version 2.0
+2026-05-28T15:47:10.453784+00:00 pradeep kernel: Free page reporting enabled
+2026-05-28T15:47:10.453894+00:00 pradeep kernel: hv_balloon: Cold memory discard hint enabled with order 9
+2026-05-28T15:47:10.453896+00:00 pradeep kernel: drop_monitor: Initializing network drop monitor service
+2026-05-28T15:47:10.453897+00:00 pradeep kernel: scsi 0:0:0:0: Direct-Access     Msft     Virtual Disk     1.0  PQ: 0 ANSI: 5
+2026-05-28T15:47:10.453898+00:00 pradeep kernel: scsi 0:0:0:1: Direct-Access     Msft     Virtual Disk     1.0  PQ: 0 ANSI: 5
+2026-05-28T15:47:10.453898+00:00 pradeep kernel: sd 0:0:0:0: Attached scsi generic sg0 type 0
+2026-05-28T15:47:10.453899+00:00 pradeep kernel: sd 0:0:0:0: [sda] 747064 512-byte logical blocks: (382 MB/365 MiB)
+2026-05-28T15:47:10.453900+00:00 pradeep kernel: sd 0:0:0:1: Attached scsi generic sg1 type 0
+2026-05-28T15:47:10.453900+00:00 pradeep kernel: sd 0:0:0:0: [sda] Write Protect is on
+2026-05-28T15:47:10.453901+00:00 pradeep kernel: sd 0:0:0:1: [sdb] 295872 512-byte logical blocks: (151 MB/144 MiB)
+2026-05-28T15:47:10.453901+00:00 pradeep kernel: sd 0:0:0:1: [sdb] Write Protect is on
+2026-05-28T15:47:10.453902+00:00 pradeep kernel: sd 0:0:0:1: [sdb] Mode Sense: 0f 00 80 00
+2026-05-28T15:47:10.453902+00:00 pradeep kernel: sd 0:0:0:1: [sdb] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+2026-05-28T15:47:10.453903+00:00 pradeep kernel: sd 0:0:0:0: [sda] Mode Sense: 0f 00 80 00
+2026-05-28T15:47:10.453904+00:00 pradeep kernel: sd 0:0:0:0: [sda] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+2026-05-28T15:47:10.453904+00:00 pradeep kernel: sd 0:0:0:1: [sdb] Attached SCSI disk
+2026-05-28T15:47:10.453905+00:00 pradeep kernel: sd 0:0:0:0: [sda] Attached SCSI disk
+2026-05-28T15:47:10.453905+00:00 pradeep kernel: NET: Registered PF_INET6 protocol family
+2026-05-28T15:47:10.453906+00:00 pradeep kernel: Segment Routing with IPv6
+2026-05-28T15:47:10.453906+00:00 pradeep kernel: In-situ OAM (IOAM) with IPv6
+2026-05-28T15:47:10.453907+00:00 pradeep kernel: NET: Registered PF_PACKET protocol family
+2026-05-28T15:47:10.453907+00:00 pradeep kernel: 9pnet: Installing 9P2000 support
+2026-05-28T15:47:10.453908+00:00 pradeep kernel: NET: Registered PF_VSOCK protocol family
+2026-05-28T15:47:10.453908+00:00 pradeep kernel: hv_vmbus: registering driver hv_sock
+2026-05-28T15:47:10.453909+00:00 pradeep kernel: IPI shorthand broadcast: enabled
+2026-05-28T15:47:10.453910+00:00 pradeep kernel: AVX2 version of gcm_enc/dec engaged.
+2026-05-28T15:47:10.453910+00:00 pradeep kernel: AES CTR mode by8 optimization enabled
+2026-05-28T15:47:10.453911+00:00 pradeep kernel: sched_clock: Marking stable (488006514, 2442903)->(534768310, -44318893)
+2026-05-28T15:47:10.453911+00:00 pradeep kernel: registered taskstats version 1
+2026-05-28T15:47:10.453912+00:00 pradeep kernel: Loading compiled-in X.509 certificates
+2026-05-28T15:47:10.453912+00:00 pradeep kernel: ima: No TPM chip found, activating TPM-bypass!
+2026-05-28T15:47:10.453913+00:00 pradeep kernel: ima: Allocated hash algorithm: sha256
+2026-05-28T15:47:10.453913+00:00 pradeep kernel: ima: No architecture policies found
+2026-05-28T15:47:10.453914+00:00 pradeep kernel: RAS: Correctable Errors collector initialized.
+2026-05-28T15:47:10.453914+00:00 pradeep kernel: clk: Disabling unused clocks
+2026-05-28T15:47:10.453915+00:00 pradeep kernel: Freeing unused decrypted memory: 2028K
+2026-05-28T15:47:10.453922+00:00 pradeep kernel: Freeing unused kernel image (initmem) memory: 4480K
+2026-05-28T15:47:10.453923+00:00 pradeep kernel: Write protecting the kernel read-only data: 34816k
+2026-05-28T15:47:10.453923+00:00 pradeep kernel: Freeing unused kernel image (rodata/data gap) memory: 740K
+2026-05-28T15:47:10.453924+00:00 pradeep kernel: Run /init as init process
+2026-05-28T15:47:10.453924+00:00 pradeep kernel:   with arguments:
+2026-05-28T15:47:10.453925+00:00 pradeep kernel:     /init
+2026-05-28T15:47:10.453926+00:00 pradeep kernel:   with environment:
+2026-05-28T15:47:10.453926+00:00 pradeep kernel:     HOME=/
+2026-05-28T15:47:10.453927+00:00 pradeep kernel:     TERM=linux
+2026-05-28T15:47:10.453927+00:00 pradeep kernel:     WSL_ROOT_INIT=1
+2026-05-28T15:47:10.453928+00:00 pradeep kernel:     WSL_ENABLE_CRASH_DUMP=1
+2026-05-28T15:47:10.453928+00:00 pradeep kernel: WSL (1 - ): WSL version 2.7.3.0
+2026-05-28T15:47:10.453929+00:00 pradeep kernel: scsi 0:0:0:2: Direct-Access     Msft     Virtual Disk     1.0  PQ: 0 ANSI: 5
+2026-05-28T15:47:10.453929+00:00 pradeep kernel: sd 0:0:0:2: Attached scsi generic sg2 type 0
+2026-05-28T15:47:10.453931+00:00 pradeep kernel: sd 0:0:0:2: [sdc] 4194312 512-byte logical blocks: (2.15 GB/2.00 GiB)
+2026-05-28T15:47:10.453933+00:00 pradeep kernel: sd 0:0:0:2: [sdc] 4096-byte physical blocks
+2026-05-28T15:47:10.453934+00:00 pradeep kernel: sd 0:0:0:2: [sdc] Write Protect is off
+2026-05-28T15:47:10.453935+00:00 pradeep kernel: sd 0:0:0:2: [sdc] Mode Sense: 0f 00 00 00
+2026-05-28T15:47:10.453935+00:00 pradeep kernel: sd 0:0:0:2: [sdc] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+2026-05-28T15:47:10.453936+00:00 pradeep kernel: sd 0:0:0:2: [sdc] Attached SCSI disk
+2026-05-28T15:47:10.453938+00:00 pradeep kernel: EXT4-fs (sda): mounted filesystem 00000000-0000-0000-0000-000000000000 ro without journal. Quota mode: none.
+2026-05-28T15:47:10.453938+00:00 pradeep kernel: EXT4-fs (sdb): mounted filesystem 00000000-0000-0000-0000-000000000000 ro without journal. Quota mode: none.
+2026-05-28T15:47:10.453941+00:00 pradeep kernel: tun: Universal TUN/TAP device driver, 1.6
+2026-05-28T15:47:10.453943+00:00 pradeep kernel: bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you need this.
+2026-05-28T15:47:10.453943+00:00 pradeep kernel: Bridge firewalling registered
+2026-05-28T15:47:10.453944+00:00 pradeep kernel: Adding 2097152k swap on /dev/sdc.  Priority:-2 extents:1 across:2097152k 
+2026-05-28T15:47:10.453945+00:00 pradeep kernel: hv_pci 8dd7d903-de35-41ca-82a8-bfb7c783c1cd: PCI VMBus probing: Using version 0x10004
+2026-05-28T15:47:10.453945+00:00 pradeep kernel: hv_pci 8dd7d903-de35-41ca-82a8-bfb7c783c1cd: PCI host bridge to bus de35:00
+2026-05-28T15:47:10.453946+00:00 pradeep kernel: pci_bus de35:00: root bus resource [mem 0xc00000000-0xe00001fff window]
+2026-05-28T15:47:10.453947+00:00 pradeep kernel: pci_bus de35:00: No busn resource found for root bus, will use [bus 00-ff]
+2026-05-28T15:47:10.453948+00:00 pradeep kernel: pci de35:00:00.0: [1af4:105a] type 00 class 0x088000
+2026-05-28T15:47:10.453948+00:00 pradeep kernel: pci de35:00:00.0: reg 0x10: [mem 0xe00000000-0xe00000fff 64bit]
+2026-05-28T15:47:10.453949+00:00 pradeep kernel: pci de35:00:00.0: reg 0x18: [mem 0xe00001000-0xe00001fff 64bit]
+2026-05-28T15:47:10.453950+00:00 pradeep kernel: pci de35:00:00.0: reg 0x20: [mem 0xc00000000-0xdffffffff 64bit]
+2026-05-28T15:47:10.453950+00:00 pradeep kernel: pci_bus de35:00: busn_res: [bus 00-ff] end is updated to 00
+2026-05-28T15:47:10.453951+00:00 pradeep kernel: pci de35:00:00.0: BAR 4: assigned [mem 0xc00000000-0xdffffffff 64bit]
+2026-05-28T15:47:10.453951+00:00 pradeep kernel: pci de35:00:00.0: BAR 0: assigned [mem 0xe00000000-0xe00000fff 64bit]
+2026-05-28T15:47:10.453952+00:00 pradeep kernel: pci de35:00:00.0: BAR 2: assigned [mem 0xe00001000-0xe00001fff 64bit]
+2026-05-28T15:47:10.453952+00:00 pradeep kernel: virtio-pci de35:00:00.0: enabling device (0000 -> 0002)
+2026-05-28T15:47:10.453953+00:00 pradeep kernel: virtiofs virtio1: Cache len: 0x200000000 @ 0xc00000000
+2026-05-28T15:47:10.453954+00:00 pradeep kernel: scsi 0:0:0:3: Direct-Access     Msft     Virtual Disk     1.0  PQ: 0 ANSI: 5
+2026-05-28T15:47:10.453954+00:00 pradeep kernel: sd 0:0:0:3: Attached scsi generic sg3 type 0
+2026-05-28T15:47:10.453955+00:00 pradeep kernel: sd 0:0:0:3: [sdd] 2147483648 512-byte logical blocks: (1.10 TB/1.00 TiB)
+2026-05-28T15:47:10.453955+00:00 pradeep kernel: sd 0:0:0:3: [sdd] 4096-byte physical blocks
+2026-05-28T15:47:10.453956+00:00 pradeep kernel: sd 0:0:0:3: [sdd] Write Protect is off
+2026-05-28T15:47:10.453956+00:00 pradeep kernel: sd 0:0:0:3: [sdd] Mode Sense: 0f 00 00 00
+2026-05-28T15:47:10.453957+00:00 pradeep kernel: sd 0:0:0:3: [sdd] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+2026-05-28T15:47:10.453957+00:00 pradeep kernel: sd 0:0:0:3: [sdd] Attached SCSI disk
+2026-05-28T15:47:10.453958+00:00 pradeep kernel: hv_storvsc fd1d2cbd-ce7c-535c-966b-eb5f811c95f0: tag#319 cmd 0x2a status: scsi 0x0 srb 0x4 hv 0xc00000a1
+2026-05-28T15:47:10.453958+00:00 pradeep kernel: hv_storvsc fd1d2cbd-ce7c-535c-966b-eb5f811c95f0: tag#383 cmd 0x2a status: scsi 0x0 srb 0x4 hv 0xc00000a1
+2026-05-28T15:47:10.453959+00:00 pradeep kernel: hv_storvsc fd1d2cbd-ce7c-535c-966b-eb5f811c95f0: tag#447 cmd 0x2a status: scsi 0x0 srb 0x4 hv 0xc00000a1
+2026-05-28T15:47:10.453960+00:00 pradeep kernel: hv_storvsc fd1d2cbd-ce7c-535c-966b-eb5f811c95f0: tag#511 cmd 0x2a status: scsi 0x0 srb 0x4 hv 0xc00000a1
+2026-05-28T15:47:10.453960+00:00 pradeep kernel: hv_storvsc fd1d2cbd-ce7c-535c-966b-eb5f811c95f0: tag#639 cmd 0x2a status: scsi 0x0 srb 0x4 hv 0xc00000a1
+2026-05-28T15:47:10.453980+00:00 pradeep kernel: EXT4-fs (sdd): mounted filesystem d29285cd-bc00-4942-b44b-15544297e71c r/w with ordered data mode. Quota mode: none.
+2026-05-28T15:47:10.453981+00:00 pradeep kernel: WSL (270) ERROR: CheckConnection: getaddrinfo() failed: -5
+2026-05-28T15:47:10.453981+00:00 pradeep kernel: EXT4-fs (sdd): unmounting filesystem d29285cd-bc00-4942-b44b-15544297e71c.
+2026-05-28T15:47:10.453981+00:00 pradeep kernel: EXT4-fs (sdd): mounted filesystem d29285cd-bc00-4942-b44b-15544297e71c r/w with ordered data mode. Quota mode: none.
+2026-05-28T15:47:10.453982+00:00 pradeep kernel: misc dxg: dxgk: dxgkio_is_feature_enabled: Ioctl failed: -22
+2026-05-28T15:47:10.453982+00:00 pradeep kernel: misc dxg: dxgk: dxgkio_query_adapter_info: Ioctl failed: -22
+2026-05-28T15:47:10.453984+00:00 pradeep kernel: message repeated 2 times: [ misc dxg: dxgk: dxgkio_query_adapter_info: Ioctl failed: -22]
+2026-05-28T15:47:10.453985+00:00 pradeep kernel: misc dxg: dxgk: dxgkio_query_adapter_info: Ioctl failed: -2
+2026-05-28T15:47:10.453988+00:00 pradeep kernel: WSL (2 - init-systemd(Ubuntu)) WARNING: /usr/share/zoneinfo/Asia/Calcutta not found. Is the tzdata package installed?
+2026-05-28T15:47:10.453989+00:00 pradeep kernel: Failed to connect to system scope bus via local transport: No such file or directory
+2026-05-28T15:47:10.453989+00:00 pradeep kernel: systemd-journald[59]: Collecting audit messages is disabled.
+2026-05-28T15:47:10.453990+00:00 pradeep kernel: weston[306]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
+2026-05-28T15:47:10.453990+00:00 pradeep kernel: systemd-journald[59]: Received client request to flush runtime journal.
+2026-05-28T15:47:10.453991+00:00 pradeep kernel: ACPI: battery: Slot [BAT1] (battery present)
+2026-05-28T15:47:10.453991+00:00 pradeep kernel: ACPI: AC: AC Adapter [AC1] (off-line)
+2026-05-28T15:47:10.453992+00:00 pradeep kernel: kvm_amd: TSC scaling supported
+2026-05-28T15:47:10.453992+00:00 pradeep kernel: kvm_amd: Nested Virtualization enabled
+2026-05-28T15:47:10.453993+00:00 pradeep kernel: kvm_amd: Nested Paging enabled
+2026-05-28T15:47:10.453993+00:00 pradeep kernel: kvm_amd: kvm_amd: Hyper-V enlightened NPT TLB flush enabled
+2026-05-28T15:47:10.453994+00:00 pradeep kernel: kvm_amd: kvm_amd: Hyper-V Direct TLB Flush enabled
+2026-05-28T15:47:10.453994+00:00 pradeep kernel: kvm_amd: Virtual VMLOAD VMSAVE supported
+2026-05-28T15:47:10.454528+00:00 pradeep chronyd[253]: Disabled control of system clock
+2026-05-28T15:47:10.454785+00:00 pradeep chronyd[253]: Loaded 0 symmetric keys
+2026-05-28T15:47:10.455420+00:00 pradeep chronyd[253]: Using leap second list /usr/share/zoneinfo/leap-seconds.list
+2026-05-28T15:47:10.456633+00:00 pradeep chronyd[253]: Loaded seccomp filter (level 1)
+2026-05-28T15:47:10.456866+00:00 pradeep systemd[1]: Started chrony.service - chrony, an NTP client/server.
+2026-05-28T15:47:10.457355+00:00 pradeep chronyd[253]: Added pool 1.ntp.ubuntu.com
+2026-05-28T15:47:10.457465+00:00 pradeep chronyd[253]: Added pool 2.ntp.ubuntu.com
+2026-05-28T15:47:10.457556+00:00 pradeep chronyd[253]: Added pool 3.ntp.ubuntu.com
+2026-05-28T15:47:10.457639+00:00 pradeep chronyd[253]: Added pool 4.ntp.ubuntu.com
+2026-05-28T15:47:10.457717+00:00 pradeep chronyd[253]: Added pool ntp-bootstrap.ubuntu.com
+2026-05-28T15:47:10.491435+00:00 pradeep wsl-pro-service[214]: #033[36mINFO#033[0m Starting WSL Pro Service version wsl-pro-service/0.1.19
+2026-05-28T15:47:10.521494+00:00 pradeep snapd[211]: overlord.go:294: Acquiring state lock file
+2026-05-28T15:47:10.521660+00:00 pradeep snapd[211]: overlord.go:299: Acquired state lock file
+2026-05-28T15:47:10.552426+00:00 pradeep snapd[211]: daemon.go:276: started snapd/2.74.1+ubuntu26.04.4 (series 16; classic; devmode; wsl) ubuntu/26.04 (amd64) linux/6.6.114.1-microsoft-stand.
+2026-05-28T15:47:10.567642+00:00 pradeep networkd-dispatcher[208]: No valid path found for iwconfig
+2026-05-28T15:47:10.567870+00:00 pradeep networkd-dispatcher[208]: No valid path found for iw
+2026-05-28T15:47:10.574951+00:00 pradeep systemd[1]: tmp-syscheck\x2dmountpoint\x2d1204525038.mount: Deactivated successfully.
+2026-05-28T15:47:10.575067+00:00 pradeep snapd[211]: daemon.go:370: adjusting startup timeout by 30s (pessimistic estimate of 30s plus 5s per snap)
+2026-05-28T15:47:10.575825+00:00 pradeep systemd[1]: Started wsl-pro.service - Bridge to Ubuntu Pro agent on Windows.
+2026-05-28T15:47:10.590687+00:00 pradeep systemd[1]: Started networkd-dispatcher.service - Dispatcher daemon for systemd-networkd.
+2026-05-28T15:47:10.591026+00:00 pradeep snapd[211]: backends.go:70: AppArmor status: apparmor not enabled
+2026-05-28T15:47:10.611850+00:00 pradeep unattended-upgrade-shutdown[254]: /usr/share/unattended-upgrades/unattended-upgrade-shutdown:250: PyGIDeprecationWarning: GLib.unix_signal_add is deprecated; use GLibUnix.signal_add instead
+2026-05-28T15:47:10.611993+00:00 pradeep unattended-upgrade-shutdown[254]:   GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, sig,
+2026-05-28T15:47:10.616672+00:00 pradeep snapd[211]: helpers.go:190: error trying to compare the snap system key: system-key missing on disk
+2026-05-28T15:47:10.691253+00:00 pradeep snapd[211]: standby.go:95: will consider standby after: 5s
+2026-05-28T15:47:10.691750+00:00 pradeep systemd[1]: Started snapd.service - Snap Daemon.
+2026-05-28T15:47:10.753883+00:00 pradeep dbus-daemon[201]: [system] Activating via systemd: service name='org.freedesktop.timedate1' unit='dbus-org.freedesktop.timedate1.service' requested by ':1.5' (uid=0 pid=211 comm="/usr/lib/snapd/snapd" label="kernel")
+2026-05-28T15:47:10.759289+00:00 pradeep systemd[1]: Starting systemd-timedated.service - Time & Date Service...
+2026-05-28T15:47:10.847197+00:00 pradeep systemd[1]: Started systemd-timedated.service - Time & Date Service.
+2026-05-28T15:47:10.847441+00:00 pradeep dbus-daemon[201]: [system] Successfully activated service 'org.freedesktop.timedate1'
+2026-05-28T15:47:11.054632+00:00 pradeep landscape-config[205]: Registered:    False
+2026-05-28T15:47:11.054739+00:00 pradeep landscape-config[205]: Config Path:   /etc/landscape/client.conf
+2026-05-28T15:47:11.054762+00:00 pradeep landscape-config[205]: Data Path      /var/lib/landscape/client
+2026-05-28T15:47:11.111705+00:00 pradeep kernel: TCP: eth0: Driver has suspect GRO implementation, TCP performance may be compromised.
+2026-05-28T15:47:11.156363+00:00 pradeep systemd[1]: landscape-client.service: Skipped due to 'exec-condition'.
+2026-05-28T15:47:11.156800+00:00 pradeep systemd[1]: Condition check resulted in landscape-client.service - Landscape client daemons being skipped.
+2026-05-28T15:47:11.157112+00:00 pradeep systemd[1]: landscape-client.service: Consumed 577ms CPU time over 805ms wall clock time, 64.1M memory peak.
+2026-05-28T15:47:11.435390+00:00 pradeep systemd[1]: Reload requested from client PID 382 ('systemctl') (unit wsl-pro.service)...
+2026-05-28T15:47:11.435543+00:00 pradeep systemd[1]: Reloading...
+2026-05-28T15:47:11.636588+00:00 pradeep systemd[1]: Reloading finished in 200 ms.
+2026-05-28T15:47:11.804935+00:00 pradeep wsl-pro-service[214]: #033[33mWARNING#033[0m Could not ensure valid Landscape configuration: could not ensure valid Landscape configuration: could not register distro to Landscape: could not enable Landscape: /usr/bin/landscape-config: error: exit status 1.
+2026-05-28T15:47:11.805038+00:00 pradeep wsl-pro-service[214]:     Stdout: An account name and computer title are required.
+2026-05-28T15:47:11.805065+00:00 pradeep wsl-pro-service[214]:     Stderr: Aborting Landscape configuration
+2026-05-28T15:47:11.806242+00:00 pradeep wsl-pro-service[214]: #033[33mWARNING#033[0m Daemon: could not connect to Windows Agent: could not get address: could not read agent port file "/mnt/c/Users/prade_rgs2it/.ubuntupro/.address": open /mnt/c/Users/prade_rgs2it/.ubuntupro/.address: no such file or directory
+2026-05-28T15:47:11.970233+00:00 pradeep snapd[211]: snapmgr.go:1659: performing periodic snap downloads cache cleanup
+2026-05-28T15:47:11.970407+00:00 pradeep snapd[211]: snapmgr.go:1669: cannot clean store downloads cache: open /var/lib/snapd/cache: no such file or directory
+2026-05-28T15:47:12.213214+00:00 pradeep systemd[1]: Finished snapd.seeded.service - Wait until snapd is fully seeded.
+2026-05-28T15:47:12.214672+00:00 pradeep systemd[1]: snapd.autoimport.service - Auto import assertions from block devices skipped, no trigger condition checks were met.
+2026-05-28T15:47:12.214949+00:00 pradeep systemd[1]: Reached target multi-user.target - Multi-User System.
+2026-05-28T15:47:12.215441+00:00 pradeep systemd[1]: Reached target graphical.target - Graphical Interface.
+2026-05-28T15:47:12.216225+00:00 pradeep systemd[1]: Startup finished in 3.486s.
+2026-05-28T15:47:12.298963+00:00 pradeep systemd[1]: dmesg.service: Deactivated successfully.
+2026-05-28T15:47:12.808790+00:00 pradeep wsl-pro-service[214]: #033[33mWARNING#033[0m Daemon: could not connect to Windows Agent: could not get address: could not read agent port file "/mnt/c/Users/prade_rgs2it/.ubuntupro/.address": open /mnt/c/Users/prade_rgs2it/.ubuntupro/.address: no such file or directory
+2026-05-28T15:47:14.812801+00:00 pradeep wsl-pro-service[214]: #033[33mWARNING#033[0m Daemon: could not connect to Windows Agent: could not get address: could not read agent port file "/mnt/c/Users/prade_rgs2it/.ubuntupro/.address": open /mnt/c/Users/prade_rgs2it/.ubuntupro/.address: no such file or directory
+2026-05-28T15:47:15.693957+00:00 pradeep snapd[211]: standby.go:101: standby conditions met, initiating standby...
+2026-05-28T15:47:15.699114+00:00 pradeep snapd[211]: daemon.go:556: gracefully waiting for running hooks
+2026-05-28T15:47:15.699230+00:00 pradeep snapd[211]: daemon.go:558: done waiting for running hooks
+2026-05-28T15:47:17.619301+00:00 pradeep chronyd[253]: Selected source 185.125.190.122 (1.ntp.ubuntu.com)
+2026-05-28T15:47:18.702197+00:00 pradeep snapd[211]: standby.go:121: standby monitoring stop requested
+2026-05-28T15:47:18.702391+00:00 pradeep snapd[211]: overlord.go:543: Released state lock file
+2026-05-28T15:47:18.702447+00:00 pradeep snapd[211]: daemon stop requested to wait for socket activation
+2026-05-28T15:47:18.709308+00:00 pradeep systemd[1]: snapd.service: Deactivated successfully.
+2026-05-28T15:47:18.819550+00:00 pradeep wsl-pro-service[214]: #033[33mWARNING#033[0m Daemon: could not connect to Windows Agent: could not get address: could not read agent port file "/mnt/c/Users/prade_rgs2it/.ubuntupro/.address": open /mnt/c/Users/prade_rgs2it/.ubuntupro/.address: no such file or directory
+2026-05-28T15:47:26.830078+00:00 pradeep wsl-pro-service[214]: #033[33mWARNING#033[0m Daemon: could not connect to Windows Agent: could not get address: could not read agent port file "/mnt/c/Users/prade_rgs2it/.ubuntupro/.address": open /mnt/c/Users/prade_rgs2it/.ubuntupro/.address: no such file or directory
+2026-05-28T15:47:28.096617+00:00 pradeep chronyd[253]: Selected source 185.125.190.123 (2.ntp.ubuntu.com)
+2026-05-28T15:47:39.198328+00:00 pradeep kernel: hv_balloon: Max. dynamic memory size: 7094 MB
+2026-05-28T15:47:40.002287+00:00 pradeep adduser[479]: Adding user `soma' ...
+2026-05-28T15:47:40.005544+00:00 pradeep adduser[479]: Selecting UID/GID from range 1000 to 59999 ...
+2026-05-28T15:47:40.011137+00:00 pradeep adduser[479]: Adding new group `soma' (1000) ...
+2026-05-28T15:47:40.043599+00:00 pradeep adduser[479]: Adding new user `soma' (1000) with group `soma (1000)' ...
+2026-05-28T15:47:40.108354+00:00 pradeep adduser[479]: Creating home directory `/home/soma' ...
+2026-05-28T15:47:40.115674+00:00 pradeep adduser[479]: Copying files from `/etc/skel' ...
+2026-05-28T15:47:40.885539+00:00 pradeep systemd[1]: systemd-timedated.service: Deactivated successfully.
+2026-05-28T15:47:42.850793+00:00 pradeep wsl-pro-service[214]: #033[33mWARNING#033[0m Daemon: could not connect to Windows Agent: could not get address: could not read agent port file "/mnt/c/Users/prade_rgs2it/.ubuntupro/.address": open /mnt/c/Users/prade_rgs2it/.ubuntupro/.address: no such file or directory
+2026-05-28T15:47:44.131956+00:00 pradeep adduser[479]: Adding new user `soma' to supplemental / extra groups `users' ...
+2026-05-28T15:47:44.136552+00:00 pradeep adduser[479]: Adding user `soma' to group `users' ...
+2026-05-28T15:47:44.285178+00:00 pradeep systemd[1]: Created slice user-1000.slice - User Slice of UID 1000.
+2026-05-28T15:47:44.286803+00:00 pradeep systemd[1]: Starting user-runtime-dir@1000.service - User Runtime Directory /run/user/1000...
+2026-05-28T15:47:44.322274+00:00 pradeep systemd[1]: Finished user-runtime-dir@1000.service - User Runtime Directory /run/user/1000.
+2026-05-28T15:47:44.327643+00:00 pradeep systemd[1]: Starting user@1000.service - User Manager for UID 1000...
+2026-05-28T15:47:44.605808+00:00 pradeep systemd[536]: Queued start job for default target default.target.
+2026-05-28T15:47:44.626317+00:00 pradeep systemd[536]: Created slice app.slice - User Application Slice.
+2026-05-28T15:47:44.626740+00:00 pradeep systemd[536]: Started launchpadlib-cache-clean.timer - Clean up old files in the Launchpadlib cache.
+2026-05-28T15:47:44.627113+00:00 pradeep systemd[536]: Started ubuntu-insights-collect.timer - "Run Ubuntu-Insights collect 5 mins after boot and every month relative to the activation time".
+2026-05-28T15:47:44.627670+00:00 pradeep systemd[536]: Started ubuntu-insights-upload.timer - "Run Ubuntu-Insights upload 8 mins after boot and every week relative to the activation time".
+2026-05-28T15:47:44.628080+00:00 pradeep systemd[536]: Reached target paths.target - Paths.
+2026-05-28T15:47:44.628415+00:00 pradeep systemd[536]: Reached target timers.target - Timers.
+2026-05-28T15:47:44.628571+00:00 pradeep systemd[536]: Starting dbus.socket - D-Bus User Message Bus Socket...
+2026-05-28T15:47:44.628708+00:00 pradeep systemd[536]: Listening on dirmngr.socket - GnuPG network certificate management daemon.
+2026-05-28T15:47:44.628889+00:00 pradeep systemd[536]: Listening on gpg-agent-browser.socket - GnuPG cryptographic agent and passphrase cache (access for web browsers).
+2026-05-28T15:47:44.634883+00:00 pradeep systemd[536]: Listening on gpg-agent-extra.socket - GnuPG cryptographic agent and passphrase cache (restricted).
+2026-05-28T15:47:44.635088+00:00 pradeep systemd[536]: Starting gpg-agent-ssh.socket - GnuPG cryptographic agent (ssh-agent emulation)...
+2026-05-28T15:47:44.635421+00:00 pradeep systemd[536]: Starting gpg-agent.socket - GnuPG cryptographic agent and passphrase cache...
+2026-05-28T15:47:44.635643+00:00 pradeep systemd[536]: Listening on keyboxd.socket - GnuPG public key management service.
+2026-05-28T15:47:44.636074+00:00 pradeep systemd[536]: Listening on pk-debconf-helper.socket - debconf communication socket.
+2026-05-28T15:47:44.637107+00:00 pradeep systemd[536]: Listening on snapd.session-agent.socket - REST API socket for snapd user session agent.
+2026-05-28T15:47:44.637301+00:00 pradeep systemd[536]: Starting ssh-agent.socket - OpenSSH Agent socket...
+2026-05-28T15:47:44.637459+00:00 pradeep systemd[536]: Listening on systemd-ask-password.socket - Query the User Interactively for a Password.
+2026-05-28T15:47:44.637536+00:00 pradeep systemd[536]: Starting wslg-session.service - WSLg user service...
+2026-05-28T15:47:44.653506+00:00 pradeep systemd[536]: Listening on dbus.socket - D-Bus User Message Bus Socket.
+2026-05-28T15:47:44.654456+00:00 pradeep systemd[536]: Listening on ssh-agent.socket - OpenSSH Agent socket.
+2026-05-28T15:47:44.656904+00:00 pradeep systemd[536]: Listening on gpg-agent.socket - GnuPG cryptographic agent and passphrase cache.
+2026-05-28T15:47:44.657310+00:00 pradeep systemd[536]: Listening on gpg-agent-ssh.socket - GnuPG cryptographic agent (ssh-agent emulation).
+2026-05-28T15:47:44.658791+00:00 pradeep systemd[536]: Reached target sockets.target - Sockets.
+2026-05-28T15:47:44.658971+00:00 pradeep systemd[536]: Reached target basic.target - Basic System.
+2026-05-28T15:47:44.659084+00:00 pradeep systemd[536]: Reached target default.target - Main User Target.
+2026-05-28T15:47:44.659288+00:00 pradeep systemd[1]: Started user@1000.service - User Manager for UID 1000.
+2026-05-28T15:47:44.661076+00:00 pradeep systemd[1]: Started session-c1.scope - Session c1 of User soma.
+2026-05-28T15:47:44.714151+00:00 pradeep systemd[1]: session-c1.scope: Deactivated successfully.
+2026-05-28T15:47:44.715783+00:00 pradeep systemd[536]: Finished wslg-session.service - WSLg user service.
+2026-05-28T15:47:44.716077+00:00 pradeep systemd[536]: Startup finished in 316ms.
+2026-05-28T15:47:47.285792+00:00 pradeep systemd[1]: Started session-c3.scope - Session c3 of User soma.
+2026-05-28T15:47:47.307425+00:00 pradeep systemd[1]: session-c3.scope: Deactivated successfully.
+2026-05-28T15:47:47.373661+00:00 pradeep systemd[1]: Started session-c4.scope - Session c4 of User soma.
+2026-05-28T15:47:47.391166+00:00 pradeep systemd[1]: session-c4.scope: Deactivated successfully.
+2026-05-28T15:47:47.437823+00:00 pradeep systemd[1]: Started session-c5.scope - Session c5 of User soma.
+2026-05-28T15:47:47.455006+00:00 pradeep systemd[1]: session-c5.scope: Deactivated successfully.
+2026-05-28T15:47:48.049501+00:00 pradeep systemd[1]: Started session-c6.scope - Session c6 of User soma.
+2026-05-28T15:47:48.798024+00:00 pradeep systemd[1]: session-c6.scope: Deactivated successfully.
+2026-05-28T15:47:48.861888+00:00 pradeep systemd[1]: Started session-c7.scope - Session c7 of User soma.
+2026-05-28T15:47:49.444974+00:00 pradeep systemd[1]: Started session-c8.scope - Session c8 of User soma.
+2026-05-28T15:48:14.885315+00:00 pradeep wsl-pro-service[214]: #033[33mWARNING#033[0m Daemon: could not connect to Windows Agent: could not get address: could not read agent port file "/mnt/c/Users/prade_rgs2it/.ubuntupro/.address": open /mnt/c/Users/prade_rgs2it/.ubuntupro/.address: no such file or directory
+2026-05-28T15:48:23.973412+00:00 pradeep chronyd[253]: Selected source 185.125.190.122 (1.ntp.ubuntu.com)
+2026-05-28T15:49:14.949129+00:00 pradeep wsl-pro-service[214]: #033[33mWARNING#033[0m Daemon: could not connect to Windows Agent: could not get address: could not read agent port file "/mnt/c/Users/prade_rgs2it/.ubuntupro/.address": open /mnt/c/Users/prade_rgs2it/.ubuntupro/.address: no such file or directory
+2026-05-28T15:52:15.134119+00:00 pradeep wsl-pro-service[214]: message repeated 3 times: [ #033[33mWARNING#033[0m Daemon: could not connect to Windows Agent: could not get address: could not read agent port file "/mnt/c/Users/prade_rgs2it/.ubuntupro/.address": open /mnt/c/Users/prade_rgs2it/.ubuntupro/.address: no such file or directory]
+2026-05-28T15:52:58.146963+00:00 pradeep systemd[536]: launchpadlib-cache-clean.service - Clean up old files in the Launchpadlib cache skipped, unmet condition check ConditionPathExists=/home/soma/.launchpadlib/api.launchpad.net/cache
+2026-05-28T15:52:58.156071+00:00 pradeep systemd[536]: Starting ubuntu-insights-collect.service - "Collect platform report using Ubuntu Insights while respecting consent"...
+2026-05-28T15:52:58.297064+00:00 pradeep ubuntu-insights[786]: 2026/05/28 15:52:58 WARN failed to run wsl.exe -v error="exit status 1"
+2026-05-28T15:52:58.714984+00:00 pradeep ubuntu-insights[786]: {
+2026-05-28T15:52:58.715144+00:00 pradeep ubuntu-insights[786]:   "insightsVersion": "0.9.3ubuntu",
+2026-05-28T15:52:58.715206+00:00 pradeep ubuntu-insights[786]:   "collectionTime": 1779983578,
+2026-05-28T15:52:58.715316+00:00 pradeep ubuntu-insights[786]:   "systemInfo": {
+2026-05-28T15:52:58.715399+00:00 pradeep ubuntu-insights[786]:     "hardware": {
+2026-05-28T15:52:58.715452+00:00 pradeep ubuntu-insights[786]:       "cpu": {
+2026-05-28T15:52:58.715538+00:00 pradeep ubuntu-insights[786]:         "name": "AMD Ryzen 7 7730U with Radeon Graphics",
+2026-05-28T15:52:58.715629+00:00 pradeep ubuntu-insights[786]:         "vendor": "AuthenticAMD",
+2026-05-28T15:52:58.715732+00:00 pradeep ubuntu-insights[786]:         "architecture": "x86_64",
+2026-05-28T15:52:58.715853+00:00 pradeep ubuntu-insights[786]:         "cpus": 16,
+2026-05-28T15:52:58.715937+00:00 pradeep ubuntu-insights[786]:         "sockets": 1,
+2026-05-28T15:52:58.715991+00:00 pradeep ubuntu-insights[786]:         "coresPerSocket": 8,
+2026-05-28T15:52:58.716113+00:00 pradeep ubuntu-insights[786]:         "threadsPerCore": 2
+2026-05-28T15:52:58.716215+00:00 pradeep ubuntu-insights[786]:       },
+2026-05-28T15:52:58.716285+00:00 pradeep ubuntu-insights[786]:       "memory": {
+2026-05-28T15:52:58.716324+00:00 pradeep ubuntu-insights[786]:         "size": 6858
+2026-05-28T15:52:58.716361+00:00 pradeep ubuntu-insights[786]:       },
+2026-05-28T15:52:58.716415+00:00 pradeep ubuntu-insights[786]:       "disks": [
+2026-05-28T15:52:58.716518+00:00 pradeep ubuntu-insights[786]:         {
+2026-05-28T15:52:58.716615+00:00 pradeep ubuntu-insights[786]:           "size": 364,
+2026-05-28T15:52:58.716687+00:00 pradeep ubuntu-insights[786]:           "type": "disk"
+2026-05-28T15:52:58.716727+00:00 pradeep ubuntu-insights[786]:         },
+2026-05-28T15:52:58.716802+00:00 pradeep ubuntu-insights[786]:         {
+2026-05-28T15:52:58.716831+00:00 pradeep ubuntu-insights[786]:           "size": 144,
+2026-05-28T15:52:58.716875+00:00 pradeep ubuntu-insights[786]:           "type": "disk"
+2026-05-28T15:52:58.716928+00:00 pradeep ubuntu-insights[786]:         },
+2026-05-28T15:52:58.716958+00:00 pradeep ubuntu-insights[786]:         {
+2026-05-28T15:52:58.716987+00:00 pradeep ubuntu-insights[786]:           "size": 2048,
+2026-05-28T15:52:58.717048+00:00 pradeep ubuntu-insights[786]:           "type": "disk"
+2026-05-28T15:52:58.717082+00:00 pradeep ubuntu-insights[786]:         },
+2026-05-28T15:52:58.717111+00:00 pradeep ubuntu-insights[786]:         {
+2026-05-28T15:52:58.717140+00:00 pradeep ubuntu-insights[786]:           "size": 1048576,
+2026-05-28T15:52:58.717178+00:00 pradeep ubuntu-insights[786]:           "type": "disk"
+2026-05-28T15:52:58.717234+00:00 pradeep ubuntu-insights[786]:         }
+2026-05-28T15:52:58.717273+00:00 pradeep ubuntu-insights[786]:       ]
+2026-05-28T15:52:58.717345+00:00 pradeep ubuntu-insights[786]:     },
+2026-05-28T15:52:58.717388+00:00 pradeep ubuntu-insights[786]:     "software": {
+2026-05-28T15:52:58.717433+00:00 pradeep ubuntu-insights[786]:       "os": {
+2026-05-28T15:52:58.717505+00:00 pradeep ubuntu-insights[786]:         "family": "linux",
+2026-05-28T15:52:58.717555+00:00 pradeep ubuntu-insights[786]:         "distribution": "Ubuntu",
+2026-05-28T15:52:58.717618+00:00 pradeep ubuntu-insights[786]:         "version": "26.04"
+2026-05-28T15:52:58.717656+00:00 pradeep ubuntu-insights[786]:       },
+2026-05-28T15:52:58.717708+00:00 pradeep ubuntu-insights[786]:       "timezone": "UTC",
+2026-05-28T15:52:58.717747+00:00 pradeep ubuntu-insights[786]:       "language": "C"
+2026-05-28T15:52:58.717782+00:00 pradeep ubuntu-insights[786]:     },
+2026-05-28T15:52:58.717811+00:00 pradeep ubuntu-insights[786]:     "platform": {
+2026-05-28T15:52:58.717873+00:00 pradeep ubuntu-insights[786]:       "wsl": {
+2026-05-28T15:52:58.717911+00:00 pradeep ubuntu-insights[786]:         "subsystemVersion": 2,
+2026-05-28T15:52:58.717976+00:00 pradeep ubuntu-insights[786]:         "systemd": "used",
+2026-05-28T15:52:58.718042+00:00 pradeep ubuntu-insights[786]:         "interop": "enabled",
+2026-05-28T15:52:58.718092+00:00 pradeep ubuntu-insights[786]:         "kernelVersion": "6.6.114.1-microsoft-standard-WSL2"
+2026-05-28T15:52:58.718171+00:00 pradeep ubuntu-insights[786]:       }
+2026-05-28T15:52:58.718212+00:00 pradeep ubuntu-insights[786]:     }
+2026-05-28T15:52:58.718290+00:00 pradeep ubuntu-insights[786]:   }
+2026-05-28T15:52:58.718330+00:00 pradeep ubuntu-insights[786]: }
+2026-05-28T15:52:58.721641+00:00 pradeep systemd[536]: Finished ubuntu-insights-collect.service - "Collect platform report using Ubuntu Insights while respecting consent".
+2026-05-28T15:53:15.194481+00:00 pradeep wsl-pro-service[214]: #033[33mWARNING#033[0m Daemon: could not connect to Windows Agent: could not get address: could not read agent port file "/mnt/c/Users/prade_rgs2it/.ubuntupro/.address": open /mnt/c/Users/prade_rgs2it/.ubuntupro/.address: no such file or directory

@@ -1,0 +1,27 @@
+May 22 03:40:01 server1 CRON[12801]: (root) CMD (run-parts /etc/cron.hourly)
+May 22 03:41:12 server1 systemd[1]: Started Session 42 of user admin.
+May 22 03:42:01 server1 sshd[13204]: Accepted publickey for admin from 192.168.1.10
+May 22 03:42:15 server1 sshd[13210]: Failed password for root from 203.0.113.42 port 51234 ssh2
+May 22 03:43:00 server1 systemd[1]: Starting Daily apt upgrade and clean activities...
+May 22 03:43:30 server1 kernel: [12345.678] usb 1-1: new high-speed USB device number 3 using xhci_hcd
+May 22 03:44:55 server1 ntpd[1023]: kernel time sync enabled
+May 22 03:45:01 server1 CRON[12900]: (root) CMD (/usr/sbin/logrotate /etc/logrotate.conf)
+May 22 03:46:00 server1 systemd[1]: NetworkManager.service: Reloading configuration.
+May 22 03:47:32 server1 kernel: [14201.001] Out of memory: Kill process 9823 (java) score 892 or sacrifice child
+May 22 03:47:33 server1 systemd[1]: mysql.service: Main process exited, code=killed, status=9/KILL
+May 22 03:47:33 server1 systemd[1]: mysql.service: Failed with result 'signal'.
+May 22 03:48:00 server1 systemd[1]: Stopped MySQL Community Server.
+May 22 03:48:01 server1 systemd[1]: Starting MySQL Community Server...
+May 22 03:48:12 server1 mysqld[10012]: WARNING: innodb_buffer_pool_size is set to 128M, recommend at least 512M
+May 22 03:49:00 server1 systemd[1]: Started MySQL Community Server.
+May 22 03:50:44 server1 sshd[13301]: Accepted publickey for deploy from 10.0.0.5
+May 22 03:51:00 server1 kernel: [15000.000] EXT4-fs (sda1): mounted filesystem with ordered data mode
+May 22 03:55:30 server1 sudo[14001]: admin : TTY=pts/0 ; PWD=/home/admin ; USER=root ; COMMAND=/bin/systemctl status mysql
+May 22 04:00:01 server1 CRON[14101]: (root) CMD (run-parts /etc/cron.hourly)
+May 22 04:05:12 server1 systemd[1]: logrotate.service: Succeeded.
+May 22 04:10:00 server1 kernel: [18000.000] NET: Registered PF_INET6 protocol family
+May 22 04:15:32 server1 backup[15500]: ERROR: Backup failed - destination /mnt/backup is not mounted
+May 22 04:16:00 server1 systemd[1]: backup-daily.service: Failed with result 'exit-code'.
+May 22 04:20:00 server1 sshd[15601]: Accepted publickey for admin from 192.168.1.10
+May 22 04:25:00 server1 CRON[15700]: (root) CMD (run-parts /etc/cron.hourly)
+May 22 04:30:00 server1 systemd[1]: Started Session 43 of user admin.
