@@ -9,3 +9,8 @@ env/
 .DS_Store
 *.code-workspace
 output/
+
+# Local-only samples (contain real system data)
+samples/auth.log
+samples/kern.log
+samples/sample_journal.log

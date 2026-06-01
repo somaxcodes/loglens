@@ -1,10 +1,25 @@
-FILTER_KEYWORDS = [
-    "ERROR", "WARNING", "CRITICAL", "Failed", "failed", "error", "warning"
-]
+import re
+from collections import Counter
+
+FILTER_KEYWORDS = ["error", "warning", "critical", "failed"]
+
+_SYSLOG_TRADITIONAL = re.compile(
+    r'^(\w{3}\s+\d{1,2}\s+[\d:]+)\s+(\S+)\s+([a-zA-Z0-9_.\-]+?)(?:\[(\d+)\])?:\s*(.*)$'
+)
+_SYSLOG_ISO = re.compile(
+    r'^(\d{4}-\d{2}-\d{2}T[\d:.+]+)\s+(\S+)\s+([a-zA-Z0-9_.\-]+?)(?:\[(\d+)\])?:\s*(.*)$'
+)
+_ANSI_ESCAPE = re.compile(r'(?:\x1b|#033)\[[0-9;]*m')
+
+
+def strip_ansi(line: str) -> str:
+    return _ANSI_ESCAPE.sub('', line)
 
 
 def read_log(filepath: str) -> list[str]:
+    #this function takes a file path and returns a list of lines
     try:
+        #r: is read , utf-8: handles text properly ,errors="replace" : if weird characters exist, don't crash → replace them
         with open(filepath, "r", encoding="utf-8", errors="replace") as f:
             return [line.rstrip("\n") for line in f if line.strip()]
     except FileNotFoundError:
@@ -12,4 +27,62 @@ def read_log(filepath: str) -> list[str]:
 
 
 def filter_issues(lines: list[str]) -> list[str]:
-    return [line for line in lines if any(kw in line for kw in FILTER_KEYWORDS)]
+    #takes the cleaned log files and returns only the problematic ones
+    return [line for line in lines if any(kw in strip_ansi(line).lower() for kw in FILTER_KEYWORDS)]
+
+
+def parse_syslog_line(line: str) -> dict | None:
+    clean = strip_ansi(line)
+    for pattern in (_SYSLOG_TRADITIONAL, _SYSLOG_ISO):
+        m = pattern.match(clean)
+        if m:
+            return {
+                "timestamp": m.group(1),
+                "hostname":  m.group(2),
+                "service":   m.group(3),
+                "pid":       m.group(4),
+                "message":   m.group(5),
+            }
+    return None
+
+
+def classify_severity(line: str) -> str:
+    clean = strip_ansi(line).lower()
+    if "critical" in clean:
+        return "CRITICAL"
+    if any(kw in clean for kw in ("error", "failed")):
+        return "ERROR"
+    return "WARNING"
+
+
+def normalize_message(message: str) -> str:
+    msg = re.sub(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', '<IP>', message)
+    msg = re.sub(r'\bport\s+\d+', 'port <PORT>', msg)
+    msg = re.sub(r'\b0x[0-9a-fA-F]+\b', '<ADDR>', msg)
+    msg = re.sub(r'\b\d{4,}\b', '<NUM>', msg)
+    return msg.strip()
+
+
+def count_patterns(issues: list[str]) -> Counter:
+    counter: Counter = Counter()
+    for line in issues:
+        parsed = parse_syslog_line(line)
+        key = normalize_message(parsed["message"] if parsed else strip_ansi(line))
+        counter[key] += 1
+    return counter
+
+
+def severity_breakdown(issues: list[str]) -> dict[str, int]:
+    counts = {"CRITICAL": 0, "ERROR": 0, "WARNING": 0}
+    for line in issues:
+        counts[classify_severity(line)] += 1
+    return counts
+
+
+def group_by_service(issues: list[str]) -> dict[str, list[str]]:
+    groups: dict[str, list[str]] = {}
+    for line in issues:
+        parsed = parse_syslog_line(line)
+        service = parsed["service"] if parsed else "unknown"
+        groups.setdefault(service, []).append(line)
+    return groups
