@@ -14,3 +14,8 @@ output/
 samples/auth.log
 samples/kern.log
 samples/sample_journal.log
+
+# Output files (regenerated each run)
+redacted.log
+test_logs/
+tests/__pycache__/

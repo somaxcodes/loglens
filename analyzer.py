@@ -1,7 +1,11 @@
 import re
 from collections import Counter
 
-FILTER_KEYWORDS = ["error", "warning", "critical", "failed"]
+# single compiled regex replaces the old FILTER_KEYWORDS list — catches more variants (failure, fatal, exception, etc.)
+_ISSUE_PATTERN = re.compile(
+    r'\b(critical|error|fail(ed|ure|ing)?|warning|exception|panic|abort(ed)?|denied|timeout|refused|fatal)\b',
+    re.IGNORECASE,
+)
 
 _SYSLOG_TRADITIONAL = re.compile(
     r'^(\w{3}\s+\d{1,2}\s+[\d:]+)\s+(\S+)\s+([a-zA-Z0-9_.\-]+?)(?:\[(\d+)\])?:\s*(.*)$'
@@ -26,9 +30,14 @@ def read_log(filepath: str) -> list[str]:
         raise FileNotFoundError(f"Log file not found: {filepath}")
 
 
-def filter_issues(lines: list[str]) -> list[str]:
-    #takes the cleaned log files and returns only the problematic ones
-    return [line for line in lines if any(kw in strip_ansi(line).lower() for kw in FILTER_KEYWORDS)]
+def filter_issues(lines: list[str]) -> list[tuple[str, str]]:
+    #takes the cleaned log lines and returns (line, matched_keyword) for each issue
+    result = []
+    for line in lines:
+        m = _ISSUE_PATTERN.search(strip_ansi(line))
+        if m:
+            result.append((line, m.group(1).lower()))
+    return result
 
 
 def parse_syslog_line(line: str) -> dict | None:
@@ -52,7 +61,10 @@ def classify_severity(line: str) -> str:
         return "CRITICAL"
     if any(kw in clean for kw in ("error", "failed")):
         return "ERROR"
-    return "WARNING"
+    if "warning" in clean:
+        return "WARNING"
+    # line was caught by a broader keyword (timeout, denied, exception, etc.) with no severity label
+    return "UNKNOWN"
 
 
 def normalize_message(message: str) -> str:
@@ -73,7 +85,7 @@ def count_patterns(issues: list[str]) -> Counter:
 
 
 def severity_breakdown(issues: list[str]) -> dict[str, int]:
-    counts = {"CRITICAL": 0, "ERROR": 0, "WARNING": 0}
+    counts = {"CRITICAL": 0, "ERROR": 0, "WARNING": 0, "UNKNOWN": 0}
     for line in issues:
         counts[classify_severity(line)] += 1
     return counts

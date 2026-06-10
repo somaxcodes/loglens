@@ -1,0 +1,5 @@
+
+# Output files (regenerated each run)
+redacted.log
+test_logs/
+tests/__pycache__/
