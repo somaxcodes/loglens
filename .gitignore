@@ -19,3 +19,5 @@ samples/sample_journal.log
 redacted.log
 test_logs/
 tests/__pycache__/
+
+.env
