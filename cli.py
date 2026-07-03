@@ -30,6 +30,7 @@ from analyzer import (
     parse_syslog_line,
 )
 from redactor import redact_lines
+from ai_analysis import analyse
 # redact_lines() scrubs PII from all log lines before analysis when --redact is passed
 """
 from analyzer.py :
@@ -239,6 +240,12 @@ def display_summary_stats(issues: list[tuple[str, str]]) -> None:
     console.print(Panel(table, title="Summary Statistics"))
 
 
+def display_analysis(text: str, mode: str) -> None:
+    # mode="ai" title used when Groq integration lands; "rule" is the current default
+    title = "AI Analysis" if mode == "ai" else "Rule-based Analysis"
+    console.print(Panel(text, title=title))
+
+
 def load_config(path: str) -> dict[str, re.Pattern]:
     """Read a JSON config file and compile any custom PII patterns it defines."""
     data = json.loads(Path(path).read_text(encoding="utf-8"))
@@ -256,6 +263,7 @@ def main() -> None:
     parser.add_argument("--config", metavar="PATH", help="JSON config with custom PII patterns (requires --redact)")
     parser.add_argument("--limit", type=int, default=50, metavar="N", help="Max issues to display (0 = no limit, default 50)")
     parser.add_argument("--no-color", action="store_true", help="Disable color output (for CI/piped use)")
+    parser.add_argument("--ai", action="store_true", help="Show analysis summary (rule-based; Groq AI integration in progress)")
     args = parser.parse_args()
 
     global console
@@ -302,10 +310,20 @@ def main() -> None:
     issues = filter_issues(lines)
     display_issues(issues, filename, limit=args.limit)
     issue_lines = [line for line, _ in issues]
-    display_severity_breakdown(severity_breakdown(issue_lines))
+
+    # compute once — reused by display functions and AI analysis
+    severity = severity_breakdown(issue_lines)
+    patterns = count_patterns(issue_lines)
+    services = group_by_service(issue_lines)
+
+    display_severity_breakdown(severity)
     display_summary_stats(issues)
-    display_top_patterns(count_patterns(issue_lines), filename)
-    display_service_groups(group_by_service(issue_lines))
+    display_top_patterns(patterns, filename)
+    display_service_groups(services)
+
+    if args.ai:
+        summary = analyse(patterns, severity, services=services)
+        display_analysis(summary, mode="rule")
 
 
 if __name__ == "__main__":

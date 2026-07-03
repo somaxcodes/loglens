@@ -14,6 +14,7 @@ _SYSLOG_ISO = re.compile(
     r'^(\d{4}-\d{2}-\d{2}T[\d:.+]+)\s+(\S+)\s+([a-zA-Z0-9_.\-]+?)(?:\[(\d+)\])?:\s*(.*)$'
 )
 _ANSI_ESCAPE = re.compile(r'(?:\x1b|#033)\[[0-9;]*m')
+_REPEAT_RE = re.compile(r'message repeated (\d+) times:\s*\[(.*)\]', re.DOTALL)
 
 
 def strip_ansi(line: str) -> str:
@@ -30,11 +31,22 @@ def read_log(filepath: str) -> list[str]:
         raise FileNotFoundError(f"Log file not found: {filepath}")
 
 
+# Lines that contain a keyword but are not real issues (boot params, config flags, etc.)
+_BENIGN_SUBSTRINGS = (
+    "panic=-1",           # kernel boot param: what to do IF a panic happens
+    "panic=0",            # same
+    "WSL_ENABLE_CRASH_DUMP",  # a config flag, not a crash
+)
+
+
 def filter_issues(lines: list[str]) -> list[tuple[str, str]]:
     #takes the cleaned log lines and returns (line, matched_keyword) for each issue
     result = []
     for line in lines:
-        m = _ISSUE_PATTERN.search(strip_ansi(line))
+        clean = strip_ansi(line)
+        if any(b in clean for b in _BENIGN_SUBSTRINGS):
+            continue
+        m = _ISSUE_PATTERN.search(clean)
         if m:
             result.append((line, m.group(1).lower()))
     return result
@@ -75,12 +87,22 @@ def normalize_message(message: str) -> str:
     return msg.strip()
 
 
+def _unfold_repeat(message: str) -> tuple[str, int]:
+    """Detect 'message repeated N times: [X]' and return (X, N). Otherwise (message, 1)."""
+    m = _REPEAT_RE.search(message)
+    if m:
+        return m.group(2).strip(), int(m.group(1))
+    return message, 1
+
+
 def count_patterns(issues: list[str]) -> Counter:
     counter: Counter = Counter()
     for line in issues:
         parsed = parse_syslog_line(line)
-        key = normalize_message(parsed["message"] if parsed else strip_ansi(line))
-        counter[key] += 1
+        message = parsed["message"] if parsed else strip_ansi(line)
+        inner, n = _unfold_repeat(message)
+        key = normalize_message(inner)
+        counter[key] += n
     return counter
 
 

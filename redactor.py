@@ -1,12 +1,40 @@
 import re
 from collections import defaultdict
 
+# systemd unit suffixes that a naive EMAIL regex mistakes for a domain TLD
+# (e.g. "user@1000.service", "getty@tty1.service" are unit names, not emails)
+_UNIT_SUFFIXES = (
+    "service", "socket", "target", "mount", "automount",
+    "scope", "slice", "timer", "path", "device", "swap",
+)
+_UNIT_TLD_GUARD = "".join(rf"(?!{s}\b)" for s in _UNIT_SUFFIXES)
+
 # Each key is the PII type label used in [REDACTED:TYPE] placeholders
 PII_PATTERNS: dict[str, re.Pattern] = {
-    "IP":     re.compile(r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'),  # e.g. 192.168.1.1; rejects 999.x.x.x but note x.x.x.x with valid octets (e.g. 6.6.114.1) still matches
-    "EMAIL":  re.compile(r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'),  # e.g. user@example.com
-    "USERID": re.compile(r'\buid=\d+(?:\([^)]+\))?|\buser=[a-zA-Z0-9_]+'),         # e.g. uid=1000(john) or user=john
-    "PHONE":  re.compile(r'\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b'),  # e.g. 555-867-5309
+    # e.g. 192.168.1.1. Octet-validated (rejects 999.x.x.x). Two guards avoid
+    # eating version strings that look like dotted numbers:
+    #   (?<!version )  → skip "WSL version 2.7.3.0"
+    #   (?!-)          → skip "6.6.114.1-microsoft", "1.0.7.0-k" (kernel/driver versions)
+    "IP":     re.compile(
+        r'(?<!version )\b'
+        r'(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
+        r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b(?!-)'
+    ),
+    # real email; the _UNIT_TLD_GUARD after the final dot rejects systemd unit names
+    "EMAIL":  re.compile(rf'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.{_UNIT_TLD_GUARD}[a-zA-Z]{{2,}}\b'),
+    # uid=/user= forms, PLUS the username segment inside a filesystem path.
+    # The lookbehinds match only the <user> in /home/<user>/, /Users/<user>/,
+    # /mnt/c/Users/<user>/ — so the surrounding path is preserved:
+    #   /mnt/c/Users/prade_rgs2it/... → /mnt/c/Users/[REDACTED:USERID]/...
+    "USERID": re.compile(
+        r'\buid=\d+(?:\([^)]+\))?'
+        r'|\buser=[a-zA-Z0-9_]+'
+        r'|(?:(?<=/home/)|(?<=/Users/))[A-Za-z0-9_.\-]+'
+    ),
+    # phone number — separators are now REQUIRED between groups, so bare long
+    # integers (epoch timestamps like 1779983210, counters like 2147483648)
+    # no longer match. Accepts 555-867-5309, (555) 867-5309, +1 555 867 5309.
+    "PHONE":  re.compile(r'\b(?:\+?1[-.\s])?(?:\(\d{3}\)\s?|\d{3}[-.\s])\d{3}[-.\s]\d{4}\b'),
 }
 
 

@@ -1,23 +1,14 @@
-__pycache__/
-*.py[cod]
-venv/
-env/
+# Real log files — may contain PII, never commit
+samples/
+*.log
+
+# Python virtual environment — bulky, machine-specific
 .venv/
-.vscode/
-.idea/
-*.swp
-.DS_Store
-*.code-workspace
-output/
+venv/
 
-# Local-only samples (contain real system data)
-samples/auth.log
-samples/kern.log
-samples/sample_journal.log
+# Python junk
+__pycache__/
+*.pyc
 
-# Output files (regenerated each run)
-redacted.log
-test_logs/
-tests/__pycache__/
-
+# Secrets — API keys for the AI layer later
 .env

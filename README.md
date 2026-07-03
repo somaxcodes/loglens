@@ -25,22 +25,22 @@ pip install -r requirements.txt
 
 ```bash
 # Basic analysis
-python cli.py --file samples/sample1_syslog.log
+python3 cli.py --file samples/sample1_syslog.log
 
 # Redact PII before analysis
-python cli.py --file samples/sample1_syslog.log --redact
+python3 cli.py --file samples/sample1_syslog.log --redact
 
 # Redact and save a clean copy
-python cli.py --file samples/sample1_syslog.log --redact --export redacted.log
+python3 cli.py --file samples/sample1_syslog.log --redact --export redacted.log
 
 # Show all issues (no truncation)
-python cli.py --file samples/sample1_syslog.log --limit 0
+python3 cli.py --file samples/sample1_syslog.log --limit 0
 
 # Plain text output (CI-friendly)
-python cli.py --file samples/sample1_syslog.log --no-color
+python3 cli.py --file samples/sample1_syslog.log --no-color
 
 # Custom PII patterns via JSON config
-python cli.py --file samples/sample1_syslog.log --redact --config loglens_config.json
+python3 cli.py --file samples/sample1_syslog.log --redact --config loglens_config.json
 ```
 
 ## Flags
@@ -96,11 +96,18 @@ Issues by Service
  kernel                        21
 ```
 
+## PII Redaction Details
+
+- **IP**: octet-validated (rejects `999.x.x.x`). Guards skip version strings, so `6.6.114.1-microsoft-standard-WSL2` and `WSL version 2.7.3.0` are left intact rather than mistaken for IPs.
+- **EMAIL**: rejects systemd unit names (`getty@tty1.service`, `user@1000.service`) whose suffix only looks like a domain TLD.
+- **USERID**: catches `uid=`/`user=` forms **and** the username segment inside filesystem paths — `/home/<user>/`, `/Users/<user>/`, `/mnt/c/Users/<user>/` — so e.g. `/mnt/c/Users/prade_rgs2it/…` becomes `/mnt/c/Users/[REDACTED:USERID]/…`.
+- **PHONE**: requires real separators (`555-867-5309`, `(555) 867-5309`), so bare long integers like epoch timestamps (`1779983210`) no longer false-match.
+
 ## Known Limitations
 
-- Kernel/driver version numbers (e.g., `6.6.114.1`) can match the IP regex since their octets are all valid (0–255). Distinguishing version strings from real IPs requires context-aware parsing beyond regex.
-- systemd unit names with `@` (e.g., `getty@tty1.service`) can match the EMAIL regex.
-- Audit timestamps with 10-digit numbers can match the PHONE regex.
+- **Hostnames are not redacted** by design (field 2 of each syslog line, e.g. `pradeep`). They're useful for multi-host grouping and conventionally low-sensitivity; redact them via a custom `--config` pattern if needed.
+- IPs and version strings not adjacent to a `-suffix` or the word `version` remain ambiguous — a standalone `1.2.3.4` is always treated as an IP.
+- Path-based username detection keys off `/home/`, `/Users/`, `/mnt/c/Users/`; usernames in other path shapes won't be caught.
 
 ## Roadmap
 
