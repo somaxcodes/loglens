@@ -67,15 +67,32 @@ def parse_syslog_line(line: str) -> dict | None:
     return None
 
 
+# Severity tiers. Every keyword _ISSUE_PATTERN can match must appear in exactly one tier below,
+# otherwise a detected line lands in UNKNOWN and the severity breakdown under-reports it.
+# Tier 1 — words that mean the system (or a process) actually went down.
+# \bpanic\b(?!=) skips the "panic=-1" kernel boot parameter, which is a policy setting, not a crash.
+_SEV_CRITICAL = re.compile(r'\b(critical|fatal|panic\b(?!=))\b', re.IGNORECASE)
+# Tier 2 — an explicit ERROR / Failed / failure label written by the emitting service.
+_SEV_ERROR_LABEL = re.compile(r'\b(error|fail(ed|ure|ing)?)\b', re.IGNORECASE)
+# Tier 3 — an explicit WARNING label. Checked BEFORE the inferred tier so a service that graded
+# its own line as WARNING ("WARNING: connection refused, retrying") is not promoted to ERROR.
+_SEV_WARNING_LABEL = re.compile(r'\b(warning)\b', re.IGNORECASE)
+# Tier 4 — no explicit label, but the wording describes an operation that did not succeed.
+# These were the keywords silently falling through to UNKNOWN before.
+_SEV_ERROR_INFERRED = re.compile(r'\b(denied|refused|exception|abort(ed)?|timeout)\b', re.IGNORECASE)
+
+
 def classify_severity(line: str) -> str:
-    clean = strip_ansi(line).lower()
-    if "critical" in clean:
+    clean = strip_ansi(line)
+    if _SEV_CRITICAL.search(clean):
         return "CRITICAL"
-    if any(kw in clean for kw in ("error", "failed")):
+    if _SEV_ERROR_LABEL.search(clean):
         return "ERROR"
-    if "warning" in clean:
+    if _SEV_WARNING_LABEL.search(clean):
         return "WARNING"
-    # line was caught by a broader keyword (timeout, denied, exception, etc.) with no severity label
+    if _SEV_ERROR_INFERRED.search(clean):
+        return "ERROR"
+    # a line with no severity signal at all — kept as a real bucket, not a dumping ground
     return "UNKNOWN"
 
 

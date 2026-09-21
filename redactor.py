@@ -9,6 +9,26 @@ _UNIT_SUFFIXES = (
 )
 _UNIT_TLD_GUARD = "".join(rf"(?!{s}\b)" for s in _UNIT_SUFFIXES)
 
+# a single 0-255 octet, reused by both the dotted and dashed IP forms
+_OCTET = r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)'
+# Reverse-DNS hostnames often embed the IP with dashes instead of dots:
+#   customer-187-141-143-180-sta.uninet-ide.com.mx   → 187.141.143.180
+#   ec2-52-80-34-196.cn-north-1.compute.amazonaws.com
+# The dotted-quad regex misses these entirely, leaking the address in plain sight.
+# The quad must be preceded by a label that contains a letter, or by a plain delimiter. That
+# is what separates a hostname from a dashed timestamp: in "backup-2026-05-28-15-47-10" every
+# candidate quad is preceded only by digits and dashes, so none of these lookbehinds fire.
+# Python needs each lookbehind fixed-width, hence the alternation rather than one expression.
+_HOSTNAME_LABEL_PREFIX = (
+    r'(?:(?<=[A-Za-z]-)'      # customer-187-...
+    r'|(?<=[A-Za-z]\d-)'      # ec2-52-...
+    r'|(?<=[A-Za-z]\d{2}-)'   # abc12-52-...
+    r'|(?<=[\s=(\[]))'        # rhost=187-...
+)
+# Trailing guard: reject a digit (mid-octet) or another -digit group (a longer dashed sequence),
+# while still allowing a following text label as in "...-180-sta".
+_DASHED_IP = rf'{_HOSTNAME_LABEL_PREFIX}{_OCTET}-{_OCTET}-{_OCTET}-{_OCTET}(?!\d)(?!-\d)'
+
 # Each key is the PII type label used in [REDACTED:TYPE] placeholders
 PII_PATTERNS: dict[str, re.Pattern] = {
     # e.g. 192.168.1.1. Octet-validated (rejects 999.x.x.x). Two guards avoid
@@ -16,9 +36,8 @@ PII_PATTERNS: dict[str, re.Pattern] = {
     #   (?<!version )  → skip "WSL version 2.7.3.0"
     #   (?!-)          → skip "6.6.114.1-microsoft", "1.0.7.0-k" (kernel/driver versions)
     "IP":     re.compile(
-        r'(?<!version )\b'
-        r'(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
-        r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b(?!-)'
+        rf'(?<!version )\b(?:{_OCTET}\.){{3}}{_OCTET}\b(?!-)'
+        rf'|{_DASHED_IP}'
     ),
     # real email; the _UNIT_TLD_GUARD after the final dot rejects systemd unit names
     "EMAIL":  re.compile(rf'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.{_UNIT_TLD_GUARD}[a-zA-Z]{{2,}}\b'),

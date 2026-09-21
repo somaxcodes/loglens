@@ -90,3 +90,34 @@ def test_redact_lines_extra_patterns_no_overlap_with_builtin():
     redacted, totals, _ = redact_lines(lines, extra_patterns=custom)
     assert "[REDACTED:IP]" in redacted[0]
     assert "[REDACTED:SSN]" in redacted[0]
+
+
+# --- dashed IPs embedded in reverse-DNS hostnames ---
+
+def test_redact_dashed_ip_after_letter_label():
+    line = "reverse mapping checking getaddrinfo for customer-187-141-143-180-sta.uninet-ide.com.mx failed"
+    redacted, counts = redact_line(line)
+    assert "187-141-143-180" not in redacted
+    assert "[REDACTED:IP]" in redacted
+
+def test_redact_dashed_ip_before_dotted_domain():
+    line = "rhost=ec2-52-80-34-196.cn-north-1.compute.amazonaws.com.cn"
+    redacted, _ = redact_line(line)
+    assert "52-80-34-196" not in redacted
+
+def test_dashed_ip_does_not_eat_dashed_date():
+    line = "wrote backup-2026-05-28-15-47-10.tar.gz to disk"
+    redacted, _ = redact_line(line)
+    assert redacted == line
+
+def test_dashed_ip_does_not_eat_kernel_version():
+    line = "Linux version 6.6.114.1-microsoft-standard-WSL2"
+    redacted, _ = redact_line(line)
+    assert "[REDACTED" not in redacted
+
+def test_dotted_ip_still_redacted_alongside_dashed():
+    line = "Failed password from 173.234.31.186 (host-10-0-0-5.example.com)"
+    redacted, counts = redact_line(line)
+    assert "173.234.31.186" not in redacted
+    assert "10-0-0-5" not in redacted
+    assert counts["IP"] == 2

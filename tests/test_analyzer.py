@@ -70,15 +70,48 @@ def test_classify_severity_failed():
 def test_classify_severity_warning():
     assert classify_severity("WARNING low disk space") == "WARNING"
 
-def test_classify_severity_unknown():
-    # "timeout" has no severity label — should not default to WARNING
-    assert classify_severity("connection timeout after 30s") == "UNKNOWN"
+def test_classify_severity_inferred_error_timeout():
+    # no explicit label, but a timeout IS a failed operation — must not land in UNKNOWN
+    assert classify_severity("connection timeout after 30s") == "ERROR"
 
-def test_classify_severity_unknown_denied():
-    assert classify_severity("permission denied for root") == "UNKNOWN"
+def test_classify_severity_inferred_error_denied():
+    assert classify_severity("permission denied for root") == "ERROR"
 
 def test_classify_severity_critical_takes_priority():
     assert classify_severity("critical error occurred") == "CRITICAL"
+
+def test_classify_severity_fatal_is_critical():
+    # regression: "PCI: Fatal: No config space access function found" used to report UNKNOWN
+    assert classify_severity("PCI: Fatal: No config space access function found") == "CRITICAL"
+
+def test_classify_severity_panic_is_critical():
+    assert classify_severity("Kernel panic - not syncing: Attempted to kill init") == "CRITICAL"
+
+def test_classify_severity_panic_boot_param_not_critical():
+    # "panic=-1" is a boot policy setting, not a crash
+    assert classify_severity("Kernel command line: BOOT_IMAGE=/vmlinuz panic=-1 quiet") != "CRITICAL"
+
+def test_classify_severity_fatal_signal_is_critical():
+    assert classify_severity("weston: potentially unexpected fatal signal 6.") == "CRITICAL"
+
+def test_classify_severity_inferred_error_refused():
+    assert classify_severity("connect to host failed: connection refused") == "ERROR"
+
+def test_classify_severity_inferred_error_exception():
+    assert classify_severity("Uncaught exception in worker thread") == "ERROR"
+
+def test_classify_severity_inferred_error_abort():
+    assert classify_severity("transaction aborted, rolling back") == "ERROR"
+
+def test_every_issue_keyword_has_a_severity_tier():
+    """Regression guard for the root cause: _ISSUE_PATTERN and classify_severity drifting apart."""
+    for keyword in ("critical", "error", "failed", "failure", "warning", "exception",
+                    "panic", "aborted", "denied", "timeout", "refused", "fatal"):
+        assert classify_severity(f"service: {keyword} in operation") != "UNKNOWN", keyword
+
+def test_classify_severity_explicit_warning_beats_inferred_error():
+    # a service that labelled its own line WARNING must not be promoted to ERROR
+    assert classify_severity("WARNING: connection refused, will retry") == "WARNING"
 
 
 # --- parse_syslog_line ---
@@ -127,11 +160,12 @@ def test_severity_breakdown_counts():
         "critical failure",
         "disk error",
         "WARNING: low memory",
-        "connection timeout",
+        "connection timeout",          # inferred ERROR
+        "POSSIBLE BREAK-IN ATTEMPT!",  # no severity signal at all → UNKNOWN
     ]
     result = severity_breakdown(lines)
     assert result["CRITICAL"] == 1
-    assert result["ERROR"] == 1
+    assert result["ERROR"] == 2
     assert result["WARNING"] == 1
     assert result["UNKNOWN"] == 1
 
