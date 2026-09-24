@@ -30,7 +30,7 @@ from analyzer import (
     parse_syslog_line,
 )
 from redactor import redact_lines
-from ai_analysis import analyse
+from ai_analysis import analyse, AnalysisResult
 # redact_lines() scrubs PII from all log lines before analysis when --redact is passed
 """
 from analyzer.py :
@@ -240,10 +240,16 @@ def display_summary_stats(issues: list[tuple[str, str]]) -> None:
     console.print(Panel(table, title="Summary Statistics"))
 
 
-def display_analysis(text: str, mode: str) -> None:
-    # mode="ai" title used when Groq integration lands; "rule" is the current default
-    title = "AI Analysis" if mode == "ai" else "Rule-based Analysis"
-    console.print(Panel(text, title=title))
+def display_analysis(result: AnalysisResult) -> None:
+    title = "AI Analysis" if result.mode == "ai" else "Rule-based Analysis"
+    if result.ai_error:
+        # AI was attempted (use_ai=True) and failed — say so, and why, so a
+        # silent fallback never looks the same as a genuine AI-generated answer.
+        console.print(Panel(
+            f"[yellow]AI analysis unavailable: {result.ai_error} — showing rule-based analysis instead[/yellow]",
+            title="[yellow]AI Analysis Skipped[/yellow]",
+        ))
+    console.print(Panel(result.text, title=title))
 
 
 def load_config(path: str) -> dict[str, re.Pattern]:
@@ -322,8 +328,8 @@ def main() -> None:
     display_service_groups(services)
 
     if args.ai:
-        summary = analyse(patterns, severity, services=services)
-        display_analysis(summary, mode="rule")
+        result = analyse(patterns, severity, services=services, use_ai=True)
+        display_analysis(result)
 
 
 if __name__ == "__main__":
