@@ -1,9 +1,16 @@
 import os
 import re
 from collections import Counter
+from dataclasses import dataclass
 
 from dotenv import load_dotenv
-from groq import Groq
+from groq import (
+    Groq,                  # the API client itself
+    APIConnectionError,    # never reached Groq at all — DNS, network down, or the request timed out
+    AuthenticationError,   # Groq rejected the API key itself (bad or revoked key)
+    GroqError,              # base class for every error the SDK defines — catch-all within the SDK
+    RateLimitError,         # Groq accepted the key but is throttling this account
+)
 
 from redactor import redact_line
 '''
@@ -248,18 +255,52 @@ def run_ai_analysis(
     return response.choices[0].message.content.strip()
 
 
+@dataclass
+class AnalysisResult:
+    """
+    What analyse() actually did. cli.py needs this to report whether AI ran or
+    silently fell back and why — but ai_analysis.py has no `rich`/console
+    dependency and never prints anything itself, so that information has to
+    travel back as data rather than as a side-effect print. cli.py decides how
+    (or whether) to display it.
+    """
+    text: str                    # the analysis text to show, either way
+    mode: str                    # "ai" — Groq answered; "rule" — the rule-based fallback ran
+    ai_error: str | None = None  # set only when use_ai=True but the AI path failed; explains why
+
+
 def analyse(
     patterns: Counter,
     severity: dict[str, int],
     services: dict[str, list] | None = None,
     use_ai: bool = False,
-) -> str:
-    if use_ai:
-        try:
-            return run_ai_analysis(patterns, severity, services)
-        except Exception:
-            return fallback_analysis(patterns, severity, services)
-    return fallback_analysis(patterns, severity, services)
+) -> AnalysisResult:
+    if not use_ai:
+        text = fallback_analysis(patterns, severity, services)
+        return AnalysisResult(text=text, mode="rule")
+
+    try:
+        text = run_ai_analysis(patterns, severity, services)
+        return AnalysisResult(text=text, mode="ai")
+    except AuthenticationError:
+        reason = "invalid or missing GROQ_API_KEY"
+    except RateLimitError:
+        reason = "Groq rate limit hit"
+    except APIConnectionError:
+        # APITimeoutError is a subclass of APIConnectionError, so a plain
+        # timeout is caught here too — both mean "never got a response back".
+        reason = "network/timeout error reaching Groq"
+    except GroqError as e:
+        # Any other error the SDK itself defines that isn't one of the three
+        # specific cases above (e.g. a malformed response from the API).
+        reason = f"Groq API error ({type(e).__name__})"
+    except Exception as e:
+        # Not from the Groq SDK at all — e.g. our own RuntimeError from
+        # run_ai_analysis() when GROQ_API_KEY isn't set in the environment.
+        reason = f"unexpected error ({type(e).__name__})"
+
+    text = fallback_analysis(patterns, severity, services)
+    return AnalysisResult(text=text, mode="rule", ai_error=reason)
 
 
 if __name__ == "__main__":

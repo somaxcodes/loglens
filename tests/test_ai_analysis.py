@@ -1,10 +1,12 @@
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
+import httpx
 from collections import Counter
+from groq import AuthenticationError, RateLimitError, APIConnectionError, APITimeoutError, GroqError
 from ai_analysis import (
     fallback_analysis, analyse, _health_label, _build_prompt, run_ai_analysis,
-    _shorten_keep_tag_whole, shorten,
+    _shorten_keep_tag_whole, shorten, AnalysisResult,
 )
 import ai_analysis  # imported as a module too, so tests can monkeypatch ai_analysis.Groq directly
 
@@ -89,8 +91,10 @@ def test_real_v3_data():
 
 def test_analyse_without_ai_calls_fallback():
     result = analyse(Counter({"disk error": 5}), {"CRITICAL": 0, "ERROR": 5, "WARNING": 0, "UNKNOWN": 0})
-    assert isinstance(result, str)
-    assert len(result) > 0
+    assert isinstance(result, AnalysisResult)
+    assert result.mode == "rule"
+    assert result.ai_error is None  # AI was never attempted (use_ai defaults to False), not failed
+    assert len(result.text) > 0
 
 def test_analyse_with_ai_falls_back_on_error(monkeypatch):
     """
@@ -119,9 +123,73 @@ def test_analyse_with_ai_falls_back_on_error(monkeypatch):
         {"CRITICAL": 0, "ERROR": 5, "WARNING": 0, "UNKNOWN": 0},
         use_ai=True,
     )
-    assert isinstance(result, str)
-    assert "No issues detected." not in result
-    assert "disk error" in result  # confirms it's fallback_analysis's real output, not an empty string
+    assert isinstance(result, AnalysisResult)
+    assert result.mode == "rule"  # fell back, did not silently return nothing
+    assert "No issues detected." not in result.text
+    assert "disk error" in result.text  # confirms it's fallback_analysis's real output
+    # RuntimeError isn't one of Groq's own exception types, so it lands in the
+    # final generic `except Exception` clause, not the Groq-specific ones below.
+    assert result.ai_error == "unexpected error (RuntimeError)"
+
+
+# --- analyse(): specific failure reason per Groq exception type ---
+
+def _fake_response(status: int) -> httpx.Response:
+    request = httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions")
+    return httpx.Response(status, request=request)
+
+_ARGS = (Counter({"x": 1}), {"CRITICAL": 0, "ERROR": 1, "WARNING": 0, "UNKNOWN": 0})
+
+def test_analyse_reports_authentication_error(monkeypatch):
+    def _raise(*a, **k):
+        raise AuthenticationError("invalid api key", response=_fake_response(401), body=None)
+    monkeypatch.setattr(ai_analysis, "run_ai_analysis", _raise)
+
+    result = analyse(*_ARGS, use_ai=True)
+    assert result.mode == "rule"
+    assert result.ai_error == "invalid or missing GROQ_API_KEY"
+
+def test_analyse_reports_rate_limit_error(monkeypatch):
+    def _raise(*a, **k):
+        raise RateLimitError("too many requests", response=_fake_response(429), body=None)
+    monkeypatch.setattr(ai_analysis, "run_ai_analysis", _raise)
+
+    result = analyse(*_ARGS, use_ai=True)
+    assert result.mode == "rule"
+    assert result.ai_error == "Groq rate limit hit"
+
+def test_analyse_reports_connection_error(monkeypatch):
+    def _raise(*a, **k):
+        request = httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions")
+        raise APIConnectionError(message="connection failed", request=request)
+    monkeypatch.setattr(ai_analysis, "run_ai_analysis", _raise)
+
+    result = analyse(*_ARGS, use_ai=True)
+    assert result.mode == "rule"
+    assert result.ai_error == "network/timeout error reaching Groq"
+
+def test_analyse_reports_timeout_as_connection_error(monkeypatch):
+    # APITimeoutError is a SUBCLASS of APIConnectionError. This proves the
+    # broader `except APIConnectionError` clause also catches the timeout
+    # subtype, rather than needing its own separate except clause.
+    def _raise(*a, **k):
+        request = httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions")
+        raise APITimeoutError(request=request)
+    monkeypatch.setattr(ai_analysis, "run_ai_analysis", _raise)
+
+    result = analyse(*_ARGS, use_ai=True)
+    assert result.mode == "rule"
+    assert result.ai_error == "network/timeout error reaching Groq"
+
+def test_analyse_reports_generic_groq_error(monkeypatch):
+    # Anything the SDK raises that isn't one of the three specific cases above.
+    def _raise(*a, **k):
+        raise GroqError("something else the SDK defines")
+    monkeypatch.setattr(ai_analysis, "run_ai_analysis", _raise)
+
+    result = analyse(*_ARGS, use_ai=True)
+    assert result.mode == "rule"
+    assert result.ai_error == "Groq API error (GroqError)"
 
 
 # --- _build_prompt PII redaction ---
