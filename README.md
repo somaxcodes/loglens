@@ -1,17 +1,18 @@
 # LogLens
 
-A local tool that reads a Linux log file and tells you what's actually wrong with it in plain English, instead of leaving you to scroll through thousands of lines looking for the ones that matter.
+A CLI tool that reads Linux logs and tells you the **severity** of each 
+problem, **groups recurring failures** even when the details differ each 
+time, and surfaces the **likely root cause** — laid out in ranked, 
+readable tables.
 
-Take one of the sample logs in this repo: 943 raw lines. Only 76 of those are actual problems worth your time, and even those 76 boil down to just 24 distinct issues once LogLens merges the ones that are really the same failure happening over and over. One of those 24, a service unable to connect because a config file is missing, accounts for 86 of the occurrences on its own. So instead of reading 943 lines, you read one ranked list of 24 real problems and know exactly where to start.
+## Privacy
 
-## Local by default, network only when you ask for AI
-
-Everything except `--ai` runs entirely on your machine: reading, parsing, redacting, and pattern-matching are all local, nothing sent anywhere. `--ai` is the one exception. It sends a short statistical summary (counts and the top few patterns, not the raw log) to Groq's API for a plain-English explanation. That summary is always redacted first, whether or not you also passed `--redact`, so it isn't a flag you have to remember to combine correctly. If the AI call fails for any reason (bad key, network down, rate limit), LogLens falls back to a fully offline, rule-based summary automatically and tells you which of those happened and why.
+Everything except `--ai` runs entirely on your machine: reading, parsing, redacting, and pattern-matching are all local. `--ai` is the one exception. It sends a short statistical summary (counts and the top few patterns, not the raw log) to Groq's API for a plain-English explanation. That summary is always redacted first, whether or not you also passed `--redact`, so it isn't a flag you have to remember to combine correctly. If the AI call fails for any reason (bad key, network down, rate limit), LogLens falls back to a fully offline, rule-based summary automatically and tells you which of those happened and why.
 
 ## What it does
 
 - **Parses standard Linux syslog**, both the classic `Mon DD HH:MM:SS` format (what you get from OpenSSH, auth.log, kern.log) and ISO 8601 timestamps. It works out which one it is line by line, no flag needed.
-- **Groups repeats into one problem, not fifty.** Real logs repeat the same failure with small differences each time (a changing IP, port, or process ID), and also sometimes literally say "message repeated N times: [...]" in the syslog itself. LogLens normalizes the parts that change and unwraps those repeat-count lines, so the same underlying failure collapses into a single ranked entry instead of cluttering the list.
+- **Groups repeats into one problem.** Real logs repeat the same failure with small differences each time (a changing IP, port, or process ID), and also sometimes literally say "message repeated N times: [...]" in the syslog itself. LogLens normalizes the parts that change and unwraps those repeat-count lines, so the same underlying failure collapses into a single ranked entry instead of cluttering the list.
 - **Redacts PII with the actual false positives handled, not just a regex.** A plain "find anything that looks like an email" rule flags `user@1000.service` (a systemd unit name) as someone's email address. LogLens's pattern explicitly rejects unit-name suffixes, so it doesn't. A plain IP-finder misses addresses written with dashes instead of dots inside hostnames (`customer-187-141-143-180-sta.example.com`); LogLens catches those too, while still leaving kernel/driver version strings like `6.6.114.1-microsoft-standard-WSL2` alone. These are specific, tested cases, not a general claim. See `tests/test_redactor.py`.
 - **Explains errors in plain language via AI (`--ai`, optional).** Instead of a one-line verdict, it walks through its reasoning: what it's looking at, what that means, why it matters, and it explains any technical term the first time it uses it. It also adjusts tone to the situation, calm and explanatory for a minor issue, direct and urgent when the data shows something genuinely critical.
 - **Grades severity and groups by service**: CRITICAL / ERROR / WARNING / UNKNOWN, and which service (sshd, kernel, systemd, etc.) is generating the most noise.
@@ -147,7 +148,7 @@ inside WSL with `nslookup google.com`.
 
 ## Known Limitations
 
-- **Hostnames are not redacted** by design (field 2 of each syslog line, e.g. `pradeep`). They're useful for multi-host grouping and conventionally low-sensitivity; redact them via a custom `--config` pattern if needed.
+- **Hostnames are not redacted** by design. They're useful for multi-host grouping and conventionally low-sensitivity; redact them via a custom `--config` pattern if needed.
 - IPs and version strings not adjacent to a `-suffix` or the word `version` remain ambiguous. A standalone `1.2.3.4` is always treated as an IP.
 - Path-based username detection keys off `/home/`, `/Users/`, `/mnt/c/Users/`; usernames in other path shapes won't be caught.
 - Only syslog-style logs are parsed into structured fields (timestamp/host/service/pid). Other formats (application stack traces, Windows Event Log, JSON logs) are not currently supported.
