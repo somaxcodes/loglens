@@ -1,2 +1,4 @@
 rich
 pytest
+groq
+python-dotenv

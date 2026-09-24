@@ -1,9 +1,77 @@
+import os
+import re
 from collections import Counter
+
+from dotenv import load_dotenv
+from groq import Groq
+
+from redactor import redact_line
+'''
+`.env` is where I store my API key locally.
+
+`load_dotenv()` reads the `.env` file and makes the values available in the program's environment.
+
+Then `os.getenv("GROQ_API_KEY")` asks the environment, "What is the value of GROQ_API_KEY?"
+
+The Python code doesn't need to know where the key came from. It only asks the environment for the key. On a server or CI system, the key can be provided directly as an environment variable without using a `.env` file.
+'''
+
+# Reads the .env file in the project root and copies anything in it into the
+# environment, so os.getenv() below can find GROQ_API_KEY. Harmless no-op if
+# there is no .env (e.g. CI, where the key comes from a real env var instead).
+load_dotenv()
+
+GROQ_MODEL = "openai/gpt-oss-20b"
+
+# How much of each list we send. The tail of a Counter is mostly one-off noise:
+# it costs tokens and dilutes the model's attention without adding signal.
+TOP_PATTERNS = 8
+TOP_SERVICES = 5
+
+# Standing instructions for the model: who it is and what shape the answer takes.
+# Kept close to fallback_analysis()'s output so both render the same in cli.py's Panel.
+SYSTEM_PROMPT = """You are a Linux systems engineer triaging a log file.
+You are given a statistical summary of the issues found, not the raw log.
+
+Reply with at most 8 short lines of plain text:
+- a one-line health verdict and what it is based on
+- the most likely root cause of the dominant pattern
+- one concrete next command or file to check
+
+Rules: plain text only, no markdown, no bullets, no preamble, no restating
+the numbers back. Say "insufficient evidence" rather than guessing."""
 
 
 def shorten(text: str, width: int = 100) -> str:
     text = text.strip()
     return text if len(text) <= width else text[:width - 1].rstrip() + "…"
+
+
+# Matches a redaction placeholder like "[REDACTED:EMAIL]" as one whole unit.
+_REDACTED_TAG = re.compile(r'\[REDACTED:[^\]]+\]')
+
+
+def _shorten_keep_tag_whole(text: str, width: int = 100) -> str:
+    """
+    Same rule as shorten(), except: if the width cutoff would land inside a
+    [REDACTED:...] placeholder, push the cut to the end of that placeholder
+    instead of slicing through it. Used only in _build_prompt() — the AI path —
+    where a tag reading "[REDACTED:EMAI" is confusing to send to a model, and a
+    result a few characters over budget is a fine trade for the tag staying whole.
+    Not applied to the plain shorten() used by fallback_analysis(), which only
+    ever prints to this machine's own terminal — a cut tag there is cosmetic.
+    """
+    text = text.strip()
+    if len(text) <= width:
+        return text
+
+    cut = width - 1  # shorten()'s original cut point, before the "…" is appended
+    for m in _REDACTED_TAG.finditer(text):
+        if m.start() < cut < m.end():
+            cut = m.end()  # extend the cut past the whole tag
+            break          # the cut point can only fall inside one tag at a time
+
+    return text[:cut].rstrip() + "…"
 
 
 def _categorize(pattern: str) -> str:
@@ -106,12 +174,78 @@ def fallback_analysis(
     return "\n".join(lines)
 
 
+def _build_prompt(
+    patterns: Counter,
+    severity: dict[str, int],
+    services: dict[str, list] | None = None,
+) -> str:
+    """Flatten the analyzer's counts into the plain-text summary we send to Groq."""
+    total = sum(severity.values())
+
+    lines = [
+        f"Total issue lines: {total}",
+        (
+            "Severity breakdown: "
+            f"{severity.get('CRITICAL', 0)} critical, "
+            f"{severity.get('ERROR', 0)} errors, "
+            f"{severity.get('WARNING', 0)} warnings, "
+            f"{severity.get('UNKNOWN', 0)} unknown"
+        ),
+        "",
+        "Most frequent issue patterns:",
+    ]
+
+    for pattern, count in patterns.most_common(TOP_PATTERNS):
+        # Redact BEFORE shortening: truncating first can cut a PII match in half
+        # (e.g. "soma.das@exampl…"), and a half-match slips past the regex entirely.
+        safe_pattern, _ = redact_line(pattern)
+        lines.append(f"  {count}x  {_shorten_keep_tag_whole(safe_pattern, 160)}")
+
+    if services:
+        ranked = sorted(services.items(), key=lambda kv: len(kv[1]), reverse=True)
+        lines.append("")
+        lines.append("Issue counts by service:")
+        for name, entries in ranked[:TOP_SERVICES]:
+            lines.append(f"  {name}: {len(entries)}")
+
+    prompt = "\n".join(lines)
+
+    # Belt-and-braces final pass: catches PII in the parts of the prompt that aren't
+    # per-pattern text (e.g. service names). Unconditional on purpose: --redact
+    # controls what the user sees locally, a separate question from what may leave
+    # the machine. Safe to run twice — replacing PII in text with no PII left is a
+    # no-op (idempotent) — as long as redaction always happens before truncation.
+    # Limitation: built-in PII_PATTERNS only — custom --config patterns live in
+    # cli.py and never reach this module.
+    safe_prompt, _ = redact_line(prompt)
+    return safe_prompt
+
+
 def run_ai_analysis(
     patterns: Counter,
     severity: dict[str, int],
     services: dict[str, list] | None = None,
 ) -> str:
-    raise NotImplementedError("Groq AI integration not yet wired up — use fallback for now.")
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        raise RuntimeError("GROQ_API_KEY is not set — add it to your .env file")
+
+    client = Groq(api_key=api_key)
+    '''
+    this does not contact Groq. Nothing is sent, no key is verified. It builds a local object that holds your key and a pooled HTTP connection, ready to make requests.
+    '''
+
+    prompt = _build_prompt(patterns, severity, services)
+
+    response = client.chat.completions.create(
+        model=GROQ_MODEL,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.2,
+    )
+    return response.choices[0].message.content.strip()
 
 
 def analyse(
