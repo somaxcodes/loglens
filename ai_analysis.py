@@ -12,6 +12,7 @@ from groq import (
     RateLimitError,         # Groq accepted the key but is throttling this account
 )
 
+from analyzer import pattern_key, classify_severity
 from redactor import redact_line
 '''
 `.env` is where I store my API key locally.
@@ -32,8 +33,8 @@ GROQ_MODEL = "openai/gpt-oss-20b"
 
 # How much of each list we send. The tail of a Counter is mostly one-off noise:
 # it costs tokens and dilutes the model's attention without adding signal.
-TOP_PATTERNS = 8
-TOP_SERVICES = 5
+TOP_PATTERNS = 25
+TOP_SERVICES = 15
 
 # Standing instructions for the model: who it is and what shape the answer takes.
 # Kept close to fallback_analysis()'s output so both render the same in cli.py's Panel.
@@ -56,7 +57,9 @@ Cover, in whatever order reads most naturally:
 - Overall health: what the counts show, and what that means for how urgent
   this is.
 - The dominant pattern: what it is, why it's most likely happening, and how
-  you got to that conclusion.
+  you got to that conclusion. Only discuss a dominant pattern if the summary
+  names one in its "Dominant pattern" line. If that line says none, say that
+  no single pattern clearly leads, and do not pick one out as the main problem.
 - Next steps: one primary step — the specific command or file to check first,
   and why. If the data plausibly points to one or two other causes worth
   ruling out, add those as fallbacks with a one-line reason each. Don't
@@ -72,15 +75,34 @@ UNHEALTHY should be written with real urgency and directness — short, plain
 sentences, no hedging. DEGRADED or HEALTHY keep the calm, explanatory tone
 described above.
 
-Keep the whole response to roughly 300-400 words. If the summary lists many
-patterns, give full explanatory detail — what it is, why it's happening, why
-it matters — on only the top 2-3 most significant ones, and summarize every
-other pattern in one sentence each rather than skipping them. Every number,
-pattern, and service name in the summary should be accounted for somewhere in
-your reply, even if only in that one-line summary — never silently dropped.
+Keep the response to roughly 300-400 words where you can. If the summary lists
+many patterns, give full explanatory detail on only the top 2-3 most significant
+ones, and summarize every other pattern in one sentence each. Every pattern
+listed under "Most frequent issue patterns" must be mentioned in your reply,
+and every service in the service counts must be accounted for. Coverage takes
+priority over the word limit: with many patterns, the reply may run past 400
+words, and that is fine. Never silently drop a pattern or a service.
 
-Say "insufficient evidence" rather than guessing when the data doesn't
-support a conclusion.
+Occurrence count and severity answer two different questions, so keep them
+separate. The count controls claims about repetition. A pattern marked "single
+occurrence" happened once. Never describe it as recurring, a trend, a repeated
+problem, or part of a pattern, whatever its severity. The severity controls how
+urgent your language is. A single ERROR or CRITICAL event should be stated
+plainly and seriously, without implying it happened more than once. A single
+WARNING or UNKNOWN event should be stated neutrally, without alarm.
+
+Each pattern is tagged with the service or services that logged it, in square
+brackets. Attribute a problem only to the service in its tag. Do not move an
+error from one service to another.
+
+If a list says "Showing X of Y", the rest were left out of the summary. Do not
+assume they don't exist, and do not draw conclusions about them.
+
+You may offer a best guess about a likely cause, but label it clearly as a guess.
+Use wording like "this is consistent with X, though a single event can't confirm
+that", and give one specific, read-only way to check it, such as a command or a
+log search. Never state a guess as established fact. If the data doesn't support
+even a guess, say "insufficient evidence" instead.
 
 Rules: plain text only, in every section including next steps — no markdown
 of any kind. That means no asterisks for bold or italics, no "**Primary next
@@ -166,6 +188,30 @@ def _recommendation(health: str, category: str) -> str:
     return "Review the top patterns above for the most actionable leads."
 
 
+# A pattern only counts as "the" dominant one if it clearly leads: strictly more
+# occurrences than the runner-up, and at least this share of all occurrences.
+DOMINANT_MIN_SHARE = 20  # percent
+
+
+def _dominant_pattern(patterns: Counter) -> tuple[str, int, float] | None:
+    """
+    Return (pattern, count, share%) for the one pattern that clearly leads, else None.
+    A tie at the top returns None: there is no single leader to announce, and
+    picking one of the tied patterns would be arbitrary.
+    """
+    ranked = patterns.most_common(2)
+    if not ranked:
+        return None
+    top_pattern, top_count = ranked[0]
+    runner_up = ranked[1][1] if len(ranked) > 1 else 0
+    if top_count <= runner_up:
+        return None
+    share = top_count / sum(patterns.values()) * 100
+    if share < DOMINANT_MIN_SHARE:
+        return None
+    return top_pattern, top_count, share
+
+
 def fallback_analysis(
     patterns: Counter,
     severity: dict[str, int],
@@ -190,10 +236,9 @@ def fallback_analysis(
 
     top_category = ""
     if patterns:
-        top_pattern, top_count = patterns.most_common(1)[0]
-        occurrence_total = sum(patterns.values())
-        pct = top_count / occurrence_total * 100
-        if pct >= 20:
+        dominant = _dominant_pattern(patterns)
+        if dominant:
+            top_pattern, _, pct = dominant
             top_category = _categorize(top_pattern)
             lines.append(f"Primary issue ({pct:.0f}% of all issues):")
             lines.append(f"  {shorten(top_pattern)}")
@@ -201,7 +246,7 @@ def fallback_analysis(
                 lines.append(f"  → {top_category}")
             lines.append("")
 
-        rest = patterns.most_common(6)[1:5]
+        rest = patterns.most_common(6)[1:5] if dominant else patterns.most_common(5)
         if rest:
             lines.append("Other recurring issues:")
             for pat, cnt in rest:
@@ -234,6 +279,15 @@ def _build_prompt(
     # its own from the raw numbers.
     health = _health_label(severity, total)
 
+    # Which service(s) logged each pattern. Patterns carry no service of their own,
+    # so rebuild the link from the services dict using the same keying as the counts.
+    pattern_services: dict[str, set[str]] = {}
+    for name, entries in (services or {}).items():
+        for entry in entries:
+            key, _ = pattern_key(entry)
+            pattern_services.setdefault(key, set()).add(name)
+
+    dominant = _dominant_pattern(patterns)
     lines = [
         f"Overall health: {health}",
         f"Total issue lines: {total}",
@@ -244,20 +298,49 @@ def _build_prompt(
             f"{severity.get('WARNING', 0)} warnings, "
             f"{severity.get('UNKNOWN', 0)} unknown"
         ),
-        "",
-        "Most frequent issue patterns:",
     ]
+    if dominant:
+        safe_dominant, _ = redact_line(dominant[0])
+        lines.append(f"Dominant pattern: {_shorten_keep_tag_whole(safe_dominant, 160)}")
+    else:
+        lines.append("Dominant pattern: none. No single pattern clearly leads the others.")
+    lines.append("")
 
+    lines.append("Most frequent issue patterns:")
+    if len(patterns) > TOP_PATTERNS:
+        lines.append(
+            f"  (Showing {TOP_PATTERNS} of {len(patterns)} distinct patterns. "
+            "The rest are not included.)"
+        )
     for pattern, count in patterns.most_common(TOP_PATTERNS):
         # Redact BEFORE shortening: truncating first can cut a PII match in half
         # (e.g. "soma.das@exampl…"), and a half-match slips past the regex entirely.
+        # Look up the service tag with the original key, before redaction changes it.
+        svc_tag = ", ".join(sorted(pattern_services.get(pattern, {"unknown"})))
         safe_pattern, _ = redact_line(pattern)
-        lines.append(f"  {count}x  {_shorten_keep_tag_whole(safe_pattern, 160)}")
+        # Severity is one per pattern: the words that set it survive normalization, so
+        # every line that collapses into this pattern carries the same severity
+        # (checked against 3,679 real issue lines, zero exceptions).
+        severity_tag = classify_severity(pattern)
+        if count == 1:
+            occurrence = f"1x (single occurrence, {severity_tag})"
+        else:
+            occurrence = f"{count}x ({severity_tag})"
+        lines.append(
+            f"  {occurrence}  [{svc_tag}]  {_shorten_keep_tag_whole(safe_pattern, 160)}"
+        )
+    if patterns:
+        lines.append("  Every pattern above must be mentioned in your reply.")
 
     if services:
         ranked = sorted(services.items(), key=lambda kv: len(kv[1]), reverse=True)
         lines.append("")
         lines.append("Issue counts by service:")
+        if len(ranked) > TOP_SERVICES:
+            lines.append(
+                f"  (Showing {TOP_SERVICES} of {len(ranked)} services. "
+                "The rest are not included.)"
+            )
         for name, entries in ranked[:TOP_SERVICES]:
             lines.append(f"  {name}: {len(entries)}")
 

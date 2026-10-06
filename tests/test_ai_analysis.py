@@ -2,9 +2,12 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 import httpx
+from analyzer import count_patterns, severity_breakdown, group_by_service, classify_severity, pattern_key
+from ai_analysis import SYSTEM_PROMPT
 from collections import Counter
 from groq import AuthenticationError, RateLimitError, APIConnectionError, APITimeoutError, GroqError
 from ai_analysis import (
+    TOP_PATTERNS, TOP_SERVICES,
     fallback_analysis, analyse, _health_label, _build_prompt, run_ai_analysis,
     _shorten_keep_tag_whole, shorten, AnalysisResult,
 )
@@ -299,3 +302,96 @@ def test_run_ai_analysis_never_sends_raw_pii(monkeypatch):
     assert "203.0.113.55" not in sent_text
     assert "soma.das@example.com" not in sent_text
     assert result == "fake ai response"  # confirms the fake was actually used, not a real call
+
+
+# --- dominant pattern: a tie is never announced as the primary issue ---
+
+def test_fallback_tie_at_top_is_not_announced_as_primary():
+    # two patterns at count 1 each: picking either as "primary" would be arbitrary
+    patterns = Counter({"alpha failed": 1, "beta failed": 1})
+    severity = {"CRITICAL": 0, "ERROR": 0, "WARNING": 0, "UNKNOWN": 2}
+    result = fallback_analysis(patterns, severity)
+    assert "Primary issue" not in result
+    assert "alpha failed" in result and "beta failed" in result  # both still shown
+
+def test_fallback_single_pattern_is_announced_as_primary():
+    patterns = Counter({"only failure": 4})
+    severity = {"CRITICAL": 0, "ERROR": 4, "WARNING": 0, "UNKNOWN": 0}
+    result = fallback_analysis(patterns, severity)
+    assert "Primary issue (100% of all issues)" in result
+
+def test_build_prompt_says_no_dominant_pattern_on_tie():
+    patterns = Counter({"alpha failed": 1, "beta failed": 1})
+    prompt = _build_prompt(patterns, {"CRITICAL": 0, "ERROR": 0, "WARNING": 0, "UNKNOWN": 2})
+    assert "Dominant pattern: none" in prompt
+
+
+# --- truncation is disclosed, not silent ---
+
+def test_build_prompt_notes_when_patterns_are_truncated():
+    n = TOP_PATTERNS + 2
+    patterns = Counter({f"distinct failure {i}": n - i for i in range(n)})
+    prompt = _build_prompt(patterns, {"CRITICAL": 0, "ERROR": 45, "WARNING": 0, "UNKNOWN": 0})
+    assert f"Showing {TOP_PATTERNS} of {n} distinct patterns" in prompt
+
+def test_build_prompt_sends_a_normal_sized_log_in_full():
+    # a real log of ~24 patterns must not be cut: that is the case the caps are sized for
+    patterns = Counter({f"distinct failure {i}": 2 for i in range(24)})
+    prompt = _build_prompt(patterns, {"CRITICAL": 0, "ERROR": 48, "WARNING": 0, "UNKNOWN": 0})
+    assert "Showing" not in prompt
+    assert "distinct failure 23" in prompt
+
+def test_build_prompt_notes_when_services_are_truncated():
+    n = TOP_SERVICES + 2
+    services = {f"svc{i}": [""] * (n - i) for i in range(n)}
+    prompt = _build_prompt(Counter({"x failed": 3}), {"CRITICAL": 0, "ERROR": 3, "WARNING": 0, "UNKNOWN": 0}, services)
+    assert f"Showing {TOP_SERVICES} of {n} services" in prompt
+
+
+# --- each pattern carries the service that logged it ---
+
+def test_build_prompt_tags_each_pattern_with_its_own_service():
+    lines = [
+        "Jun 14 15:16:01 combo sshd[1]: connection refused by peer",
+        "Jun 14 15:16:02 combo mysqld[2]: table crashed on disk write",
+    ]
+    prompt = _build_prompt(
+        count_patterns(lines),
+        severity_breakdown(lines),
+        group_by_service(lines),
+    )
+    ssh_line = [l for l in prompt.splitlines() if "connection refused" in l][0]
+    sql_line = [l for l in prompt.splitlines() if "table crashed" in l][0]
+    assert "[sshd]" in ssh_line and "mysqld" not in ssh_line
+    assert "[mysqld]" in sql_line and "sshd" not in sql_line
+
+
+# --- severity tag per pattern, and the rules that separate count from severity ---
+
+def test_build_prompt_tags_single_occurrence_with_its_severity():
+    lines = ["Jun 14 09:01:12 server1 sshd[1201]: Failed password for invalid user admin from 203.0.113.5 port 52114 ssh2"]
+    prompt = _build_prompt(count_patterns(lines), severity_breakdown(lines), group_by_service(lines))
+    assert "1x (single occurrence, ERROR)" in prompt
+
+def test_build_prompt_tags_repeated_pattern_with_its_severity():
+    lines = ["Jun 14 09:05:44 server1 kernel: warning: disk almost full"] * 4
+    prompt = _build_prompt(count_patterns(lines), severity_breakdown(lines), group_by_service(lines))
+    assert "4x (WARNING)" in prompt
+
+def test_pattern_severity_matches_its_raw_lines():
+    # the per-pattern tag assumes a pattern's text gives the same severity as its raw lines.
+    # This pins that assumption on the real cases checked against the sample files.
+    for line in [
+        "Jun 14 09:01:12 server1 sshd[1201]: Failed password for invalid user admin from 203.0.113.5 port 52114 ssh2",
+        "Jun 14 09:05:44 server1 kernel: WARNING: CPU temperature above threshold",
+        "Jun 14 10:02:17 server1 mysqld[1500]: Connection timeout while reading authorization packet",
+    ]:
+        assert classify_severity(pattern_key(line)[0]) == classify_severity(line)
+
+def test_system_prompt_separates_count_from_severity():
+    assert "Never describe it as recurring" in SYSTEM_PROMPT
+    assert "urgent" in SYSTEM_PROMPT
+
+def test_system_prompt_requires_guesses_to_be_labelled():
+    assert "label it clearly as a guess" in SYSTEM_PROMPT
+    assert "Never state a guess as established fact" in SYSTEM_PROMPT

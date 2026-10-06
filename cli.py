@@ -210,7 +210,9 @@ def display_summary_stats(issues: list[tuple[str, str]]) -> None:
             dt = datetime.fromisoformat(ts)
         except ValueError:
             try:
-                dt = datetime.strptime(ts, "%b %d %H:%M:%S").replace(year=datetime.now().year)
+                # syslog timestamps carry no year, so put the current one in before parsing
+                year = datetime.now().year
+                dt = datetime.strptime(f"{ts} {year}", "%b %d %H:%M:%S %Y")
             except ValueError:
                 continue
         timestamps.append(dt)
@@ -236,7 +238,7 @@ def display_summary_stats(issues: list[tuple[str, str]]) -> None:
     table.add_row("Last issue",   last.strftime("%Y-%m-%d %H:%M:%S"))
     table.add_row("Duration",     duration_str)
     table.add_row("Issues/hour",  f"{rate:.1f}")
-    table.add_row("Peak hour",    f"{peak_hour:02d}:00–{peak_hour+1:02d}:00 ({peak_count} issues)")
+    table.add_row("Peak hour",    f"{peak_hour:02d}:00–{peak_hour+1:02d}:00 ({peak_count} issue{'s' if peak_count != 1 else ''})")
     console.print(Panel(table, title="Summary Statistics"))
 
 

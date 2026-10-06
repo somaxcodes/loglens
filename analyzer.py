@@ -112,13 +112,18 @@ def _unfold_repeat(message: str) -> tuple[str, int]:
     return message, 1
 
 
+def pattern_key(line: str) -> tuple[str, int]:
+    """The pattern a single issue line belongs to, and how many occurrences it stands for."""
+    parsed = parse_syslog_line(line)
+    message = parsed["message"] if parsed else strip_ansi(line)
+    inner, n = _unfold_repeat(message)
+    return normalize_message(inner), n
+
+
 def count_patterns(issues: list[str]) -> Counter:
     counter: Counter = Counter()
     for line in issues:
-        parsed = parse_syslog_line(line)
-        message = parsed["message"] if parsed else strip_ansi(line)
-        inner, n = _unfold_repeat(message)
-        key = normalize_message(inner)
+        key, n = pattern_key(line)
         counter[key] += n
     return counter
 
