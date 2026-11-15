@@ -8,6 +8,7 @@ from collections import Counter
 from groq import AuthenticationError, RateLimitError, APIConnectionError, APITimeoutError, GroqError
 from ai_analysis import (
     TOP_PATTERNS, TOP_SERVICES,
+    _headline_pattern, _noisiest_service,
     fallback_analysis, analyse, _health_label, _build_prompt, run_ai_analysis,
     _shorten_keep_tag_whole, shorten, AnalysisResult,
 )
@@ -318,12 +319,12 @@ def test_fallback_single_pattern_is_announced_as_primary():
     patterns = Counter({"only failure": 4})
     severity = {"CRITICAL": 0, "ERROR": 4, "WARNING": 0, "UNKNOWN": 0}
     result = fallback_analysis(patterns, severity)
-    assert "Primary issue (100% of all issues)" in result
+    assert "Primary issue (ERROR, 100% of all issues)" in result
 
-def test_build_prompt_says_no_dominant_pattern_on_tie():
+def test_build_prompt_says_no_primary_concern_on_tie():
     patterns = Counter({"alpha failed": 1, "beta failed": 1})
     prompt = _build_prompt(patterns, {"CRITICAL": 0, "ERROR": 0, "WARNING": 0, "UNKNOWN": 2})
-    assert "Dominant pattern: none" in prompt
+    assert "Primary concern: none" in prompt
 
 
 # --- truncation is disclosed, not silent ---
@@ -360,8 +361,10 @@ def test_build_prompt_tags_each_pattern_with_its_own_service():
         severity_breakdown(lines),
         group_by_service(lines),
     )
-    ssh_line = [l for l in prompt.splitlines() if "connection refused" in l][0]
-    sql_line = [l for l in prompt.splitlines() if "table crashed" in l][0]
+    # anchor on the per-pattern list lines (they carry a [service] tag) rather
+    # than any line that happens to mention the same words, e.g. the headline
+    ssh_line = [l for l in prompt.splitlines() if "connection refused" in l and "[" in l][0]
+    sql_line = [l for l in prompt.splitlines() if "table crashed" in l and "[" in l][0]
     assert "[sshd]" in ssh_line and "mysqld" not in ssh_line
     assert "[mysqld]" in sql_line and "sshd" not in sql_line
 
@@ -395,3 +398,78 @@ def test_system_prompt_separates_count_from_severity():
 def test_system_prompt_requires_guesses_to_be_labelled():
     assert "label it clearly as a guess" in SYSTEM_PROMPT
     assert "Never state a guess as established fact" in SYSTEM_PROMPT
+
+
+# --- fix 1: a tied noisiest service is shown as a tie, never a false winner ---
+
+def test_noisiest_service_tie_is_not_collapsed_into_a_false_winner():
+    # ntpd and logrotate tied at 1 each, exactly the real case found on synthetic_boring.log
+    services = {"ntpd": [""] * 1, "logrotate": [""] * 1}
+    result = _noisiest_service(services, total=2)
+    names, count = result
+    assert set(names) == {"ntpd", "logrotate"}
+    assert count == 1
+
+def test_fallback_reports_a_tied_service_as_a_tie_not_a_winner():
+    patterns = Counter({"clock offset warning": 1, "skipping rotated log": 1})
+    severity = {"CRITICAL": 0, "ERROR": 0, "WARNING": 2, "UNKNOWN": 0}
+    services = {"ntpd": [""] * 1, "logrotate": [""] * 1}
+    result = fallback_analysis(patterns, severity, services)
+    assert "Services tied for noisiest: ntpd, logrotate" in result
+    assert "Noisiest service: ntpd" not in result
+
+def test_fallback_announces_a_clear_noisiest_service_when_not_tied():
+    patterns = Counter({"a": 5, "b": 1})
+    severity = {"CRITICAL": 0, "ERROR": 0, "WARNING": 6, "UNKNOWN": 0}
+    services = {"nginx": [""] * 5, "cron": [""] * 1}
+    result = fallback_analysis(patterns, severity, services)
+    assert "Noisiest service: nginx (5/6 issues, 83%)" in result
+
+
+# --- fix 2: severity decides the headline, frequency never outranks it ---
+
+def test_headline_picks_a_rare_critical_over_a_frequent_warning():
+    patterns = Counter({
+        "WARNING clock offset 0.9s exceeds recommended limit": 50,
+        "CRITICAL disk failure detected on /dev/sda1": 1,
+    })
+    pattern, count, severity = _headline_pattern(patterns)
+    assert "disk failure" in pattern
+    assert count == 1
+    assert severity == "CRITICAL"
+
+def test_fallback_leads_with_severity_not_frequency():
+    patterns = Counter({
+        "WARNING clock offset 0.9s exceeds recommended limit": 50,
+        "CRITICAL disk failure detected on /dev/sda1": 1,
+    })
+    severity = {"CRITICAL": 1, "ERROR": 0, "WARNING": 50, "UNKNOWN": 0}
+    result = fallback_analysis(patterns, severity)
+    lines = result.splitlines()
+    primary_line = next(l for l in lines if l.startswith("Primary issue"))
+    also_line = next(l for l in lines if l.startswith("Also happens often"))
+    assert "CRITICAL" in primary_line
+    assert "disk failure" in lines[lines.index(primary_line) + 1]
+    assert "clock offset" in lines[lines.index(also_line) + 1]
+
+def test_build_prompt_leads_with_severity_not_frequency():
+    patterns = Counter({
+        "WARNING clock offset 0.9s exceeds recommended limit": 50,
+        "CRITICAL disk failure detected on /dev/sda1": 1,
+    })
+    severity = {"CRITICAL": 1, "ERROR": 0, "WARNING": 50, "UNKNOWN": 0}
+    prompt = _build_prompt(patterns, severity)
+    assert "Primary concern (CRITICAL): CRITICAL disk failure" in prompt
+    assert "Also happens often: WARNING clock offset" in prompt
+
+def test_headline_falls_back_to_frequency_when_nothing_worse_than_warning():
+    # no ERROR/CRITICAL anywhere — same old behaviour: frequency decides, and
+    # it still has to clearly dominate (DOMINANT_MIN_SHARE), not just edge out a tie
+    patterns = Counter({"frequent warning": 10, "rare warning": 1})
+    pattern, count, severity = _headline_pattern(patterns)
+    assert pattern == "frequent warning"
+    assert severity == "WARNING"
+
+def test_headline_is_none_on_a_tie_within_the_worst_severity_tier():
+    patterns = Counter({"critical A": 1, "critical B": 1, "warning C": 50})
+    assert _headline_pattern(patterns) is None

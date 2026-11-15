@@ -56,10 +56,15 @@ it reappears.
 Cover, in whatever order reads most naturally:
 - Overall health: what the counts show, and what that means for how urgent
   this is.
-- The dominant pattern: what it is, why it's most likely happening, and how
-  you got to that conclusion. Only discuss a dominant pattern if the summary
-  names one in its "Dominant pattern" line. If that line says none, say that
-  no single pattern clearly leads, and do not pick one out as the main problem.
+- The primary concern: what it is, why it's most likely happening, and how
+  you got to that conclusion. Use whatever the summary's "Primary concern"
+  line names. If it says none, say that nothing clearly stands out, and do
+  not pick one out as the main problem yourself.
+- If the summary has an "Also happens often" line, mention it as a separate,
+  secondary fact about repetition, never as the main problem. The primary
+  concern was chosen because of how serious it is, which can be different
+  from whatever happens most often — a rare but serious problem outranks a
+  common but minor one. Do not let frequency override that.
 - Next steps: one primary step — the specific command or file to check first,
   and why. If the data plausibly points to one or two other causes worth
   ruling out, add those as fallbacks with a one-line reason each. Don't
@@ -212,6 +217,72 @@ def _dominant_pattern(patterns: Counter) -> tuple[str, int, float] | None:
     return top_pattern, top_count, share
 
 
+# How serious each level is, worst to best. Used to decide what deserves the
+# headline spot: severity always wins that spot over raw frequency.
+_SEVERITY_RANK = {"CRITICAL": 3, "ERROR": 2, "WARNING": 1, "UNKNOWN": 0}
+
+
+def _headline_pattern(patterns: Counter) -> tuple[str, int, str] | None:
+    """
+    Decide which single pattern deserves top billing: the headline.
+
+    Severity always outranks frequency. A problem that happens only once is
+    still the headline if it's more serious than everything else in the log —
+    a single CRITICAL line beats a WARNING that repeats 50 times, because how
+    bad something is matters more than how often it happens.
+
+    Only when nothing worse than a WARNING exists anywhere does frequency get
+    to decide the headline on its own, and even then it has to clearly lead
+    (DOMINANT_MIN_SHARE), the same caution as before — there's no urgency to
+    justify calling out a rare warning as "the" main issue.
+
+    Returns (pattern, count, severity), or None if there's a tie with nothing
+    to clearly deserve the spotlight alone.
+    """
+    if not patterns:
+        return None
+
+    tagged = [(p, c, classify_severity(p)) for p, c in patterns.items()]
+    worst_rank = max(_SEVERITY_RANK[sev] for _, _, sev in tagged)
+    # only patterns at the single worst severity level present compete for the headline —
+    # a frequent but minor problem never gets to outrank a rarer, more serious one
+    contenders = sorted(
+        ((p, c, sev) for p, c, sev in tagged if _SEVERITY_RANK[sev] == worst_rank),
+        key=lambda x: x[1],
+        reverse=True,
+    )
+    best_pattern, best_count, best_severity = contenders[0]
+    runner_up_count = contenders[1][1] if len(contenders) > 1 else 0
+    if best_count <= runner_up_count:
+        return None  # a tie at the most serious level present — no single headline
+
+    if worst_rank < _SEVERITY_RANK["ERROR"]:
+        # nothing worse than a WARNING anywhere — same bar as the old frequency-only rule
+        total = sum(c for _, c, _ in tagged)
+        if best_count / total * 100 < DOMINANT_MIN_SHARE:
+            return None
+
+    return best_pattern, best_count, best_severity
+
+
+def _noisiest_service(services: dict[str, list], total: int) -> tuple[list[str], int] | None:
+    """
+    Return (names, count) for whichever service(s) have the most issues.
+    names has more than one entry only when there's a genuine tie at the top —
+    that's shown as a tie, never collapsed into a single, arbitrarily-picked
+    "winner" (the same mistake _dominant_pattern() guards against for patterns).
+    Returns None if nothing clears the noise threshold.
+    """
+    if not services or total == 0:
+        return None
+    ranked = sorted(services.items(), key=lambda kv: len(kv[1]), reverse=True)
+    top_count = len(ranked[0][1])
+    if top_count / total < 0.40:
+        return None
+    tied_names = [name for name, lines in ranked if len(lines) == top_count]
+    return tied_names, top_count
+
+
 def fallback_analysis(
     patterns: Counter,
     severity: dict[str, int],
@@ -235,18 +306,33 @@ def fallback_analysis(
     lines.append("")
 
     top_category = ""
+    shown_patterns: set[str] = set()
     if patterns:
-        dominant = _dominant_pattern(patterns)
-        if dominant:
-            top_pattern, _, pct = dominant
+        occurrence_total = sum(patterns.values())
+        headline = _headline_pattern(patterns)
+        if headline:
+            top_pattern, top_count, top_severity = headline
             top_category = _categorize(top_pattern)
-            lines.append(f"Primary issue ({pct:.0f}% of all issues):")
+            pct = top_count / occurrence_total * 100
+            lines.append(f"Primary issue ({top_severity}, {pct:.0f}% of all issues):")
             lines.append(f"  {shorten(top_pattern)}")
             if top_category:
                 lines.append(f"  → {top_category}")
             lines.append("")
+            shown_patterns.add(top_pattern)
 
-        rest = patterns.most_common(6)[1:5] if dominant else patterns.most_common(5)
+        # A separate, frequency-only fact. Severity decided the headline above;
+        # this never competes with it for the same spot, even when what repeats
+        # most is a different, less serious pattern.
+        frequent = _dominant_pattern(patterns)
+        if frequent and frequent[0] not in shown_patterns:
+            freq_pattern, freq_count, freq_pct = frequent
+            lines.append(f"Also happens often ({freq_pct:.0f}% of all issues):")
+            lines.append(f"  {shorten(freq_pattern)}")
+            lines.append("")
+            shown_patterns.add(freq_pattern)
+
+        rest = [(p, c) for p, c in patterns.most_common(7) if p not in shown_patterns][:5]
         if rest:
             lines.append("Other recurring issues:")
             for pat, cnt in rest:
@@ -254,13 +340,18 @@ def fallback_analysis(
             lines.append("")
 
     if services:
-        top_service = max(services, key=lambda s: len(services[s]))
-        top_service_count = len(services[top_service])
-        if total > 0 and top_service_count / total >= 0.40:
-            lines.append(
-                f"Noisiest service: {top_service} "
-                f"({top_service_count}/{total} issues, {top_service_count/total*100:.0f}%)"
-            )
+        noisiest = _noisiest_service(services, total)
+        if noisiest:
+            names, count = noisiest
+            if len(names) == 1:
+                lines.append(
+                    f"Noisiest service: {names[0]} ({count}/{total} issues, {count/total*100:.0f}%)"
+                )
+            else:
+                lines.append(
+                    f"Services tied for noisiest: {', '.join(names)} "
+                    f"({count}/{total} issues each, {count/total*100:.0f}%)"
+                )
             lines.append("")
 
     lines.append(f"Recommendation: {_recommendation(health, top_category)}")
@@ -287,7 +378,12 @@ def _build_prompt(
             key, _ = pattern_key(entry)
             pattern_services.setdefault(key, set()).add(name)
 
-    dominant = _dominant_pattern(patterns)
+    # The headline: severity decides this, with frequency only as a tiebreaker.
+    # Kept separate from "most frequent" below — the two are never allowed to
+    # compete for the same spot, so a common but minor pattern can never read
+    # as more important than a rare but serious one.
+    headline = _headline_pattern(patterns)
+    frequent = _dominant_pattern(patterns)
     lines = [
         f"Overall health: {health}",
         f"Total issue lines: {total}",
@@ -299,11 +395,18 @@ def _build_prompt(
             f"{severity.get('UNKNOWN', 0)} unknown"
         ),
     ]
-    if dominant:
-        safe_dominant, _ = redact_line(dominant[0])
-        lines.append(f"Dominant pattern: {_shorten_keep_tag_whole(safe_dominant, 160)}")
+    if headline:
+        safe_headline, _ = redact_line(headline[0])
+        lines.append(
+            f"Primary concern ({headline[2]}): {_shorten_keep_tag_whole(safe_headline, 160)}"
+        )
     else:
-        lines.append("Dominant pattern: none. No single pattern clearly leads the others.")
+        lines.append("Primary concern: none. Nothing clearly stands out as the main issue.")
+    if frequent and (not headline or frequent[0] != headline[0]):
+        safe_frequent, _ = redact_line(frequent[0])
+        lines.append(
+            f"Also happens often: {_shorten_keep_tag_whole(safe_frequent, 160)}"
+        )
     lines.append("")
 
     lines.append("Most frequent issue patterns:")
