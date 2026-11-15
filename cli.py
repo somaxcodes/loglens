@@ -251,7 +251,12 @@ def display_analysis(result: AnalysisResult) -> None:
             f"[yellow]AI analysis unavailable: {result.ai_error} — showing rule-based analysis instead[/yellow]",
             title="[yellow]AI Analysis Skipped[/yellow]",
         ))
-    console.print(Panel(result.text, title=title))
+    # Wrapped in Text() rather than passed as a raw string: result.text is AI or
+    # rule-generated prose, which can legitimately contain square brackets (e.g.
+    # a log line quoting "[preauth]"). A raw string gets read by Rich as markup,
+    # where an unrecognized "[preauth]"-style tag is silently deleted instead of
+    # printed. Text() turns off that parsing, so the text prints exactly as given.
+    console.print(Panel(Text(result.text), title=title))
 
 
 def load_config(path: str) -> dict[str, re.Pattern]:

@@ -460,6 +460,16 @@ def _build_prompt(
     return safe_prompt
 
 
+class AIResponseTruncatedError(RuntimeError):
+    """
+    Raised when Groq's response doesn't actually contain a finished answer —
+    usually because the model's internal "reasoning" used up the whole token
+    budget before it could write the visible reply. Without this check, an
+    empty or cut-off response looks exactly like a normal success: a real
+    string, no API error, nothing to tell analyse() anything went wrong.
+    """
+
+
 def run_ai_analysis(
     patterns: Counter,
     severity: dict[str, int],
@@ -483,8 +493,28 @@ def run_ai_analysis(
             {"role": "user", "content": prompt},
         ],
         temperature=0.2,
+        # This model spends some of its token budget on hidden "reasoning" before
+        # writing the visible answer, both draw from the same pool. The default
+        # (2048) is sometimes not enough on a big, busy log: the reasoning alone
+        # can eat the whole budget, leaving a cut-off or completely empty answer.
+        # Doubling it makes that less likely, though not impossible — see the
+        # finish_reason check below for what happens when it still runs out.
+        max_tokens=4096,
     )
-    return response.choices[0].message.content.strip()
+
+    choice = response.choices[0]
+    content = (choice.message.content or "").strip()
+    if choice.finish_reason == "length" or not content:
+        # The model ran out of its token budget — either mid-answer (some text,
+        # but cut off and possibly ending mid-sentence) or before writing
+        # anything at all (content is empty). Either way this is not a real
+        # answer, so treat it as a failure rather than returning a hollow or
+        # truncated result that would look like a normal success to analyse().
+        raise AIResponseTruncatedError(
+            f"Groq cut the response short (finish_reason={choice.finish_reason!r}, "
+            f"{len(content)} chars received)"
+        )
+    return content
 
 
 @dataclass
@@ -522,6 +552,10 @@ def analyse(
         # APITimeoutError is a subclass of APIConnectionError, so a plain
         # timeout is caught here too — both mean "never got a response back".
         reason = "network/timeout error reaching Groq"
+    except AIResponseTruncatedError:
+        # Groq answered, but the model ran out of its token budget before
+        # finishing — not an API failure, just not a usable answer.
+        reason = "Groq's response was cut short (it ran out of room while thinking, before writing an answer)"
     except GroqError as e:
         # Any other error the SDK itself defines that isn't one of the three
         # specific cases above (e.g. a malformed response from the API).

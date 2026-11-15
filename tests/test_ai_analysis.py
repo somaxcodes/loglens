@@ -274,6 +274,7 @@ def test_run_ai_analysis_never_sends_raw_pii(monkeypatch):
 
     class _FakeChoice:
         message = _FakeMessage()
+        finish_reason = "stop"  # a normal, finished response — not the cut-off case
 
     class _FakeCompletions:
         def create(self, **kwargs):
